@@ -1,0 +1,7 @@
+#parameters:
+
+services:
+    cube_common.project_version:
+        class: CubeTools\CubeCommonBundle\Project\ProjectVersionGit
+        arguments:
+            - %kernel.root_dir%

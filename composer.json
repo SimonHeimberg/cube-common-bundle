@@ -1,0 +1,25 @@
+{
+    "name": "cubetools/cube-common-bundle",
+    "description": "Common Code for the CUBE Tools",
+    "homepage": "http://www.cubetools.ch",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "CUBE Team of Emch + Berger AG Bern",
+            "homepage": "http://www.cubetools.ch"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "psr-4": {"CubeTools\\CubeCommonBundle\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Tests\\CubeTools\\CubeCommonBundle\\": "tests/"}
+    },
+    "support": {
+        "issues": "https://github.com/EmchBerger/CubeCommonBundle/issues/"
+    }
+}
