@@ -5,3 +5,4 @@ services:
         class: CubeTools\CubeCommonBundle\Project\ProjectVersionGit
         arguments:
             - %kernel.root_dir%
+            - %kernel.cache_dir%

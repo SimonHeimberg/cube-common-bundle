@@ -2,22 +2,29 @@
 
 namespace CubeTools\CubeCommonBundle\Project;
 
+use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Config\Resource\FileExistenceResource;
+
 /**
  * Class to read version from this projects git repository.
  */
 class ProjectVersionGit
 {
     private $kernelRoot;
+    private $cacheDir;
     private $data = null;
 
     /**
      * Create service.
      *
      * @param string $kernelRoot kernel root directory, git repo is in its parent directory
+     * @param string $cacheDir   directory to store cached data
      */
-    public function __construct($kernelRoot)
+    public function __construct($kernelRoot, $cacheDir)
     {
         $this->kernelRoot = $kernelRoot;
+        $this->cacheDir = $cacheDir;
     }
 
     /**
@@ -63,13 +70,37 @@ class ProjectVersionGit
             return $this->data;
         }
 
+        $cacheFile = $this->cacheDir.'/cube-common_ProjectVersionGit.json';
+        $cache = new ConfigCache($cacheFile, true);
+        if ($cache->isFresh()) {
+            $data = json_decode(file_get_contents($cacheFile), true);
+            if (false !== $data) {
+                return $data;
+            }
+        }
+
         $gitDir = $this->kernelRoot.'/../.git/';
         $headFile = $gitDir.'HEAD';
         if (is_readable($headFile)) {
+            $refFile = file_get_contents($headFile, false, null, 0, 512);
+        } else {
+            $refFile = false;
+        }
+        if (false === $refFile) {
+            // reading failed
+            $resources = array(new FileExistenceResource($headFile));
+            $data = array('hash' => '', 'url' => '', 'tag' => '');
+        } elseif ('ref: ' === substr($refFile, 0, 5)) {
+            // reference
+            $refFile = $gitDir.rtrim(substr($refFile, 5));
+            $resources = array(new FileResource($headFile), new FileResource($refFile));
             $data = $this->queryGitData();
         } else {
-            $data = array('hash' => '', 'url' => '', 'tag' => '');
+            // hash or unknown
+            $resources = array(new FileResource($headFile));
+            $data = $this->queryGitData();
         }
+        $cache->write(json_encode($data), $resources);
         $this->data = $data;
 
         return $data;
