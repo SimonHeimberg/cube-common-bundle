@@ -6,3 +6,7 @@ services:
         arguments:
             - %kernel.root_dir%
             - %kernel.cache_dir%
+    cube_common.file_excel:
+        class: CubeTools\CubeCommonBundle\FileFormat\ExcelFile
+        calls:
+            - [setExcelService, ['@?phpexcel']]
