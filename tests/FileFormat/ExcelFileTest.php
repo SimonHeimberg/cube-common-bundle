@@ -3,6 +3,7 @@
 namespace Tests\CubeTools\CubeCommonBundle\FileFormat;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Response;
 use Liuggio\ExcelBundle\Factory as ExcelFactory;
 use CubeTools\CubeCommonBundle\FileFormat\Excel;
 
@@ -43,6 +44,21 @@ class ExcelFileTest extends \PHPUnit_Framework_TestCase
             return;
         }
         $this->assertInstanceOf('\PHPExcel', $xlo);
+    }
+
+    /**
+     * @depends testExportAll
+     */
+    public function testCreateResponse()
+    {
+        $fileName = 'anyName.xlsx';
+        $format = 'Excel2007';
+        $contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+        $h2e = $this->getExportService();
+        $xlo = $h2e->exportHtml('<table><tr><th>r1</th><td>d</td></tr></table>');
+        $r = $h2e->createResponse($xlo, $fileName, $format, $contentType);
+        $this->assertInstanceOf(Response::class, $r);
     }
 
     public static function provideHtmlData()

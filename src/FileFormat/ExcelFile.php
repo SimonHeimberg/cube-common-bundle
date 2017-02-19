@@ -3,6 +3,7 @@
 namespace CubeTools\CubeCommonBundle\FileFormat;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Helper for exporting html to excel file.
@@ -65,6 +66,31 @@ class ExcelFile
 
         return $this->excelSrvc->createPHPExcelObject($tmpFile['path']);
         // tmpfile is deleted automatically
+    }
+
+    /**
+     * Create response with excel download.
+     *
+     * @param \PHPExcel $xlObj       Excel object to create the download from
+     * @param string    $filename    filename to give to the download
+     * @param string    $format      format of write (like Excel2007)
+     * @param string    $contentType mime content type
+     *
+     * @return \Symfony\Component\HtmlFoundation\Response
+     */
+    public function createResponse(\PHPExcel $xlObj, $filename, $format, $contentType)
+    {
+        $xlWr = $this->excelSrvc->createWriter($xlObj, $format);
+        $response = $this->excelSrvc->createStreamedResponse($xlWr);
+        $headers = $response->headers;
+        $headers->set('Content-Type', $contentType.'; charset=utf-8');
+        $headers->set('Pragma', 'public');
+        $headers->set('Content-Disposition', $headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename
+        ));
+
+        return $response;
     }
 
     /**
