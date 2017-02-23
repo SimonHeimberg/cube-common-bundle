@@ -125,6 +125,15 @@ class ExcelFile
         return array($startCol, $row + 1);
     }
 
+    public function writeTableFromIterable(\PHPExcel_Worksheet $xlSheet, $table, $startCell=null)
+    {
+        list ($startCol, $row) = $this->getColRow($xlSheet, $startCell);
+        foreach ($table as $line) {
+            writeLineFromIterable($xlSheet, $line, array($row, $startCol));
+            ++$row;
+        }
+    }
+
     public static function getNextLineAddress($range)
     {
         list ($col, $row) = $this->getColRow($startRange);
