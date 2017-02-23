@@ -32,6 +32,9 @@ class ExcelFile
      */
     public function exportHtml($html, $selector = null)
     {
+        if (null === $this->excelSrvc) {
+            throw new \Exception('phpexcel service is not installed');
+        }
         $cr = $htmlStr = null;
         if (is_string($html)) {
             if (null === $selector) {
@@ -80,6 +83,9 @@ class ExcelFile
      */
     public function createResponse(\PHPExcel $xlObj, $filename, $format, $contentType)
     {
+        if (null === $this->excelSrvc) {
+            throw new \Exception('phpexcel service is not installed');
+        }
         $xlWr = $this->excelSrvc->createWriter($xlObj, $format);
         $response = $this->excelSrvc->createStreamedResponse($xlWr);
         $headers = $response->headers;
