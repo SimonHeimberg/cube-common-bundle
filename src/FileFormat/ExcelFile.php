@@ -78,6 +78,19 @@ class ExcelFile
         }
     }
 
+    public function writeLineFromIterable(\PHPExcel_Worksheet $xlSheet, $line)
+    {
+        list($startCol, $row) = static::getColRow($startCell);
+        $col = $startCol;
+        foreach ($line as $value) {
+            $text = $value;
+            $xlSheet->setCellValue($col.$row, $text);
+            ++$col;
+        }
+
+        return array($startCol, $row + 1);
+    }
+
     public static function getNextLineAddress($range)
     {
         list ($col, $row) = $this->getColRow($startRange);
