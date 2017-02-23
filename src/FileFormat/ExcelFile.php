@@ -3,6 +3,7 @@
 namespace CubeTools\CubeCommonBundle\FileFormat;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
@@ -11,6 +12,19 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 class ExcelFile
 {
     private $excelSrvc;
+    private $translator;
+
+    /**
+     * Create service.
+     *
+     * @param Tranlator                   $translator   Translation service
+     * @param Luiggio\ExcelBundle\Factory $excelService
+     */
+    public function __construct($translator = null, $excelService = null)
+    {
+        $this->translator = $translator;
+        $this->excelSrvc = $excelService;
+    }
 
     /**
      * set excel service.
@@ -76,6 +90,26 @@ class ExcelFile
         if (TODO) {
             $xlSheet->xxx = array();
         }
+    }
+
+    public static function writeLineFromFormLabels(\PHPExcel_Worksheet $xlSheet, FormInterface $form, $startCell)
+    {
+        list($startCol, $row) = static::getColRow($startCell);
+        $col = $startCol;
+        if ($this->translator) {
+            $trans = array($this->translator, 'trans');
+        } else {
+            $trans = function ($text) {
+                return $text;
+            };
+        }
+        foreach ($form as $widget) {
+            $text = $trans($widget->getConfig()->getOption('label'));
+            $xlSheet->setCellValue($col.$row, $text);
+            ++$col;
+        }
+
+        return array($startCol, $row + 1);
     }
 
     public function writeLineFromIterable(\PHPExcel_Worksheet $xlSheet, $line)
