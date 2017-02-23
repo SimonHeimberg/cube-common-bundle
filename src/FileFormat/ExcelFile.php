@@ -71,6 +71,21 @@ class ExcelFile
         // tmpfile is deleted automatically
     }
 
+    public function setNextCellOnSheet(\PHPExcel_Worksheet $xlSheet, $cell)
+    {
+        if (TODO) {
+            $xlSheet->xxx = array();
+        }
+    }
+
+    public static function getNextLineAddress($range)
+    {
+        list ($col, $row) = $this->getColRow($startRange);
+        ++$row;
+
+        return $col.$row;
+    }
+
     /**
      * Create response with excel download.
      *
