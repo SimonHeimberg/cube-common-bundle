@@ -134,6 +134,18 @@ class ExcelFile
         }
     }
 
+    public static function writeTableFromIterableCallable(\PHPExcel_Worksheet $xlSheet, $table, \Closure $callback, $startCell=null)
+    {
+        list ($startCol, $row) = $this->getColRow($xlSheet, $startCell);
+        foreach ($table as $lineObj) {
+            $line = $callback($lineObj);
+            $this->innerWriteLineFromIterable($xlSheet, $line, $row, $startCol);
+            ++$row;
+        }
+
+        return array($startCol, $row);
+    }
+
     public static function getNextLineAddress($range)
     {
         list ($col, $row) = $this->getColRow($startRange);
