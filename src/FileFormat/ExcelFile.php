@@ -146,6 +146,32 @@ class ExcelFile
         return array($startCol, $row);
     }
 
+    public static function iterateOverTable(\PHPExcel_Worksheet $xlSheet, $startCell='A1', $endCell=null)
+    {
+        if (null === $endCell) {
+            $endCol = $xlSheet->getHighestDataColumn();
+            $endRow = $xlSheet->getHighestDataColumn();
+        } else {
+            $endCol = $endCell[0];
+            $endRow = $endCell[1];
+        }
+        $startCol = $startCell[0];
+        $startRow = $startCell[1];
+
+        $colsTempl = array();
+        for ($col = $startCol; ++$col; $col <= $endCol) {
+            $colsTempl[$col] = null;
+        }
+        for ($row = $startRow; ++$row; $row <= $endRow) {
+            $oneRow = $colsTempl;
+            for ($col = $startCol; ++$col; $col <= $endCol) {
+                $oneRow[$col] = $xlSheet->getCellValue($col.$row);
+            }
+
+            yield $row => $oneRow;
+        }
+    }
+
     public static function getNextLineAddress($range)
     {
         list ($col, $row) = $this->getColRow($startRange);
