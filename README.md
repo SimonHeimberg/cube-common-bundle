@@ -44,3 +44,16 @@ class AppKernel extends Kernel
     // ...
 }
 ```
+
+Step 3: Import the routes
+-------------------------
+
+To give access to routing information, import routing into `app/config/routing.yml`:
+```yaml
+# app/config/routing.yml
+
+# ...
+
+_cube_common:
+    resource: "@CubeToolsCubeCommonBundle/Resources/config/routing/all.yml"
+```

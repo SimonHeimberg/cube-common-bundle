@@ -1,0 +1,17 @@
+{% spaceless -%}
+    <a href="{{ path("cube_common.reportbug") }}" target="_blank" id="cube_common_bug_report_link"
+       {%- if report_bug_class|default(null) %}class="{{ report_bug_class }}"{% endif %}
+    >
+        {{- report_bug_text|default('report bug') -}}
+    </a>
+    <script> /*bug link*/ {# with javascript because window.location also contains query parameters, hash, ... -#}
+        $(function () {
+            function report_bug() {
+                var queryParam = 'relatedUrl=' + encodeURIComponent(window.location);
+                open('{{ path("cube_common.reportbug") }}?' + queryParam, '_blank');
+                return false;
+            }
+            $('#cube_common_bug_report_link').click(report_bug).attr('href', 'javascript:void("{{ path("cube_common.reportbug") }}")');
+        });
+    </script>
+{%- endspaceless %}

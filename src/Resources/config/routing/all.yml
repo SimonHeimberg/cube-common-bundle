@@ -1,0 +1,3 @@
+_ccb_bug_report:
+    resource: "@CubeToolsCubeCommonBundle/Controller/"
+    type:     annotation
