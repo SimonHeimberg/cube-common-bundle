@@ -4,10 +4,12 @@
     <title>report bug</title>
   </head>
   <body>
+    <h1>report bug</h1>
     <form>
-        <h1>report bug</h1>
-        <label>related url:</label> <input name="relatedUrl" value="{{ relatedUrl }}" type="url"/>
-        <div>(must be below {{ baseUrl }})</div>
+        <div>
+            <label>related url:</label> <input name="relatedUrl" value="{{ relatedUrl }}" type="url"/>
+            <span>(must be below {{ baseUrl }})</span>
+        </div>
         <div>
             <label>profiler token:</label>
             <input name="profiler" value="{{ profilerToken|default('') }}" disabled="disabled" />
