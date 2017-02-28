@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('emch_berger_cube_common');
+        $rootNode = $treeBuilder->root('cubetools_cube_common');
 
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for
