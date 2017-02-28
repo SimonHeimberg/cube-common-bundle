@@ -8,6 +8,10 @@
         <h1>report bug</h1>
         <label>related url:</label> <input name="relatedUrl" value="{{ relatedUrl }}" type="url"/>
         <div>(must be below {{ baseUrl }})</div>
+        <div>
+            <label>profiler token:</label>
+            <input name="profiler" value="{{ profilerToken|default('') }}" disabled="disabled" />
+        </div>
         <input value="report bug" type="submit"/>
     </form>
     <div>When you have to sign in on github, click "back" after and then "F5" to fill in the bug data.</div>

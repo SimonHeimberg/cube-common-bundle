@@ -4,6 +4,7 @@ namespace CubeTools\CubeCommonBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -28,6 +29,8 @@ class DevelopmentSupportController extends Controller
         $verHash = $projVer->getGitHash();
 
         $relatedUrl = $request->query->get('relatedUrl', $this);
+        $profilerToken = $request->query->get('profiler');
+
         $baseUrl = $request->getHttpHost().$request->getBaseUrl();
         if ($this === $relatedUrl) {
             $relatedUrl = $request->headers->get('referer');
@@ -39,19 +42,30 @@ class DevelopmentSupportController extends Controller
                 'baseUrl' => $baseUrl,
                 'relatedUrl' => $relatedUrl,
                 'projectName' => basename($githubProjectUrl),
-                'directLink' => $this->generateBugLink($githubProjectUrl, $version, $verHash),
+                'directLink' => $this->generateBugLink($githubProjectUrl, $version, $verHash, $profilerToken),
+                'profilerToken' => $profilerToken,
             ));
         }
 
         // $module = guess module from prev url?
-        $link = $this->generateBugLink($githubProjectUrl, $version, $verHash, $relatedUrl);
+        $link = $this->generateBugLink($githubProjectUrl, $version, $verHash, $profilerToken, $relatedUrl);
 
         return $this->redirect($link);
     }
 
-    private function generateBugLink($githubProjectUrl, $version, $verHash, $relatedUrl = 'XXurlXX', $module = 'XXmoduleXX')
+    private function generateBugLink($githubProjectUrl, $version, $verHash, $profiler, $relatedUrl = 'XXurlXX', $module = 'XXmoduleXX')
     {
-        return $githubProjectUrl.'/issues/new?HINT= SIGN IN! &title='.urlencode('['.$module.']').'&body='.
-            urlencode("\n\n<hr/>\n\nversion = ".$version.'  '.substr($verHash, 0, 8)."\nurl = ".$relatedUrl);
+        $msgBody = "\n\n<hr/>\n\nversion = ".$version.'  '.substr($verHash, 0, 8)."\nurl = ".$relatedUrl;
+        if ($profiler) {
+            $profilerUrl = $this->generateUrl(
+                '_profiler',
+                array('token' => $profiler),
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            $msgBody .= "\nprofiler: [".$profiler.']('.$profilerUrl.')';
+        }
+
+        return $githubProjectUrl.'/issues/new?HINT= SIGN IN! &title='.urlencode('['.$module.']').
+                '&body='.urlencode($msgBody);
     }
 }

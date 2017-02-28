@@ -7,7 +7,14 @@
     <script> /*bug link*/ {# with javascript because window.location also contains query parameters, hash, ... -#}
         $(function () {
             function report_bug() {
-                var queryParam = 'relatedUrl=' + encodeURIComponent(window.location);
+                // get x-debug-token from debug toolbar
+                var wdtId = $('.sf-toolbar').attr('id');
+                if (wdtId.startsWith('sfwdt')) {
+                    var profilerToken = wdtId.substr(5);
+                } else {
+                    var profilerToken = '';
+                }
+                var queryParam = 'relatedUrl=' + encodeURIComponent(window.location) + '&profiler=' + profilerToken;
                 open('{{ path("cube_common.reportbug") }}?' + queryParam, '_blank');
                 return false;
             }
