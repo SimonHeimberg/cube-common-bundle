@@ -61,7 +61,7 @@ class ProjectVersionGit
      */
     public function getGitRepoUrl()
     {
-        return str_replace('.git', '', $this->getGitData()['url']);
+        return $this->getGitData()['url'];
     }
 
     protected function getGitData()
@@ -110,7 +110,8 @@ class ProjectVersionGit
     {
         $data = array();
         $data['hash'] = exec('git rev-parse HEAD');
-        $data['url'] = exec('git config --get remote.origin.url');
+        $url = exec('git config --get remote.origin.url');
+        $data['url'] = strtr($url, array('.git' => '', 'ssh://' => 'https://', 'git://' => 'https://'));
         $data['tag'] = exec('git describe --tags --always');
 
         return $data;
