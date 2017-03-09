@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="cube">
     <description>Coding style for cube tools, based on the one for Symfony2.</description>
-    <rule ref="./vendor/cube-tools/cube-common-develop/src/CodeStyle/phpcs_cube.xml"/>
+    <rule ref="./vendor/cubetools/cube-common-develop/src/CodeStyle/phpcs_cube.xml"/>
 
     <config name="severity" value="2"/>
 
