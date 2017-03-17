@@ -32,14 +32,16 @@ if (typeof(cubetools) === 'undefined') {
 
     var tableSettings = {};
 
-    cs.initializeColsSelection = function ()
+    cs.initializeColsSelection = function (settingsOfTables)
     {
         // initialize selectors
         var selectorBtns = $('.colsSelector');
         selectorBtns.each(function () {
             var btn = $(this);
             var id = btn.attr('id') || '';
-            if (true) {
+            if (settingsOfTables[id] && null !== settingsOfTables[id].settings) {
+                var setSettings = settingsOfTables[id].settings;
+            } else {
                 var setSettings = {};
             }
             var tbl = btn.closest('table');

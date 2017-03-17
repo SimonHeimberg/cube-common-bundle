@@ -1,0 +1,8 @@
+<div style="color: red; font-style: oblique;">
+    ERROR:
+    {% if btnId %}
+        Attribute id of column selection button is not unique.
+    {% else %}
+        Column selection button must have an id attribute (because there are several on this page).
+    {% endif %}
+</div>
