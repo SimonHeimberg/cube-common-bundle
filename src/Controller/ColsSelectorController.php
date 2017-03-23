@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -50,6 +51,30 @@ class ColsSelectorController extends Controller
         return new JsonResponse($settings);
     }
 
+    /**
+     * Saves column settings.
+     *
+     * @Route("/colssettings", name="cubecommon.colsselector_send")
+     * @Method("PUT")
+     */
+    public function saveSettingsAction(Request $request)
+    {
+        $request->setRequestFormat('json');
+        $id = $request->request->get('id');
+        $fullPath = $request->request->get('fullPath');
+        if (!$fullPath) {
+            throw new BadRequestHttpException('request fullPath is not set');
+        }
+        $settings = $request->request->get('settings');
+
+        $path = substr($fullPath, strlen($request->getBaseUrl()));
+        $saveId = $this->getId($path, $id);
+        $this->saveColsSettings($saveId, $settings);
+        $savedSettings = $this->getColsSettings($saveId);
+
+        return new JsonResponse(array('settings' => $savedSettings, 'id' => $id));
+    }
+
     protected function getColsSettings($saveId)
     {
         try {
@@ -63,6 +88,12 @@ class ColsSelectorController extends Controller
 
             return array($msg);
         }
+    }
+
+    protected function saveColsSettings($saveId, array $settings)
+    {
+        // error is handled by ajax caller
+        return $this->get('app.columnSettingsLoadSave')->setColSettings($saveId, $settings);
     }
 
     /**

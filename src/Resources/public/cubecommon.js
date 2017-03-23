@@ -57,6 +57,9 @@ if (typeof(cubetools) === 'undefined') {
                     var cSettings = setSettings[colId] || {};
                     cSettings.colId = colId;
                     cSettings.colNo = i + 1;
+                    if ('false' === cSettings.hidden) {
+                        cSettings.hidden = false;
+                    }
                     settings[colId] = cSettings;
                 }
             });
@@ -71,6 +74,8 @@ if (typeof(cubetools) === 'undefined') {
         var id = table.find('.colsSelector').attr('id') || '';
         var settings = cs.getHidableSettings(id);
         updateOneCol(table, settings[colId].colNo, hide);
+        settings[colId].hidden = hide;
+        cs.saveHidableSettings(id, settings);
     };
 
 
@@ -84,5 +89,40 @@ if (typeof(cubetools) === 'undefined') {
             btnSel += '#'+id;
         }
         return $(btnSel);
+    };
+
+    cs.saveHidableSettings = function (id, settings) {
+        var sendUrl = cs.selectorSendUrl;
+        if (!sendUrl) {
+            console.error('cubetools.columnselector.selectorSendUrl is not set');
+            return null;
+        }
+        if (Array.isArray(settings)) {
+            if (!settings.length) {
+                var saveSettings = {};
+            } else if (settings[0].name && settings[0].value) {
+                var saveSettings = {};
+                for (var i in settings) {
+                    saveSettings[settings[i].name] = settings[i].value;
+                }
+            }
+        } else {
+            var saveSettings = {}
+            for (var i in settings) {
+                var toSave = $.extend({}, settings[i]);
+                delete toSave.colId;
+                delete toSave.colNo;
+                saveSettings[i] = toSave;
+            }
+        }
+
+        $.ajax({
+            method: 'PUT',
+            url: sendUrl,
+            data: {id: id, fullPath: window.location.pathname, settings: saveSettings},
+            dataType: 'json', // response data type
+        });
+
+        return false;
     };
 })();
