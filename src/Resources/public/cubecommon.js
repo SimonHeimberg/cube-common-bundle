@@ -22,6 +22,10 @@ if (typeof(cubetools) === 'undefined') {
     var updateOneCol = function(table, colNo, hide)
     {
         var colFilter = ':nth-child';
+        if (table.attr('data-colFilter')) {
+            colFilter = table.attr('data-colFilter');
+            // example: :nth-child, :nth-of-type, :nth-col (from bramstein/column-selector)
+        }
         var cells = table.find('tr td, tr th').filter(colFilter+'('+colNo+')');
         if (hide) {
             cells.hide();
