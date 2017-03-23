@@ -11,10 +11,10 @@ if (typeof(cubetools) === 'undefined') {
     var updateCols = function(table, hidableSettings)
     {
         var cols = table.find('tr').eq(0).find('td, th');
-        cols.each(function (colNo) {
+        cols.each(function () {
             var colId = $(this).attr('id');
             if (hidableSettings[colId]) {
-                updateOneCol(table, colNo, hidableSettings[colId].hidden);
+                updateOneCol(table, hidableSettings[colId].colNo, hidableSettings[colId].hidden);
             }
         });
     };
@@ -22,7 +22,7 @@ if (typeof(cubetools) === 'undefined') {
     var updateOneCol = function(table, colNo, hide)
     {
         var colFilter = ':nth-child';
-        var cells = table.find('tr td, tr th').filter(colFilter+'(' + (colNo + 1) + ')');
+        var cells = table.find('tr td, tr th').filter(colFilter+'('+colNo+')');
         if (hide) {
             cells.hide();
         } else {
@@ -46,12 +46,13 @@ if (typeof(cubetools) === 'undefined') {
             }
             var tbl = btn.closest('table');
             var settings = {}; // own variable for keeping the column order
-            tbl.find('tr').eq(0).children('td, th').each( function() {
+            tbl.find('tr').eq(0).children('td, th').each( function(i) {
                 var col = $(this);
                 if (col.filter('[id^=col]').length > 0) {
                     var colId = col.attr('id');
                     var cSettings = setSettings[colId] || {};
                     cSettings.colId = colId;
+                    cSettings.colNo = i + 1;
                     settings[colId] = cSettings;
                 }
             });
@@ -62,10 +63,12 @@ if (typeof(cubetools) === 'undefined') {
 
     cs.updateColumnView = function (colId, hide) {
         var col = $('#'+colId);
-        var colNo = col.closest('tr').find('td, th').index(col);
         var table = col.closest('table');
-        updateOneCol(table, colNo, hide);
-    }
+        var id = table.find('.colsSelector').attr('id') || '';
+        var settings = cs.getHidableSettings(id);
+        updateOneCol(table, settings[colId].colNo, hide);
+    };
+
 
     cs.getHidableSettings = function (id) {
         return tableSettings[id];
