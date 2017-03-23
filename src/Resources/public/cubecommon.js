@@ -121,8 +121,24 @@ if (typeof(cubetools) === 'undefined') {
             url: sendUrl,
             data: {id: id, fullPath: window.location.pathname, settings: saveSettings},
             dataType: 'json', // response data type
+            success: submittedSuccessful,
+            error: submittedUnsuccessful,
+            _colSelId: id
         });
 
         return false;
+    };
+
+    var submittedSuccessful = function (content /*,jqXHR*/)
+    {
+        var btn = cs.getButtonForId(this._colSelId);
+        var evt = $.Event('cubetools.colselector.column_settings_saved_passed');
+        btn.trigger(evt, [content]); // id can be read from event.target.id
+    };
+
+    var submittedUnsuccessful = function (jqXHR, textStatus, errorThrown) {
+        var btn = cs.getButtonForId(this._colSelId);
+        var evt = $.Event('cubetools.colselector.column_settings_saved_failed');
+        btn.trigger(evt, [textStatus, errorThrown]); // for id, see above
     };
 })();
