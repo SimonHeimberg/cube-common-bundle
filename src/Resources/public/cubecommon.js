@@ -57,9 +57,6 @@ if (typeof(cubetools) === 'undefined') {
                     var cSettings = setSettings[colId] || {};
                     cSettings.colId = colId;
                     cSettings.colNo = i + 1;
-                    if ('false' === cSettings.hidden) {
-                        cSettings.hidden = false;
-                    }
                     settings[colId] = cSettings;
                 }
             });
