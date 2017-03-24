@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use CubeTools\CubeCommonBundle\DataHandling\DataConversion;
 
 class ColsSelectorController extends Controller
 {
@@ -92,6 +93,8 @@ class ColsSelectorController extends Controller
 
     protected function saveColsSettings($saveId, array $settings)
     {
+        DataConversion::dataTextToDataInArray($settings);
+
         // error is handled by ajax caller
         return $this->get('app.columnSettingsLoadSave')->setColSettings($saveId, $settings);
     }
