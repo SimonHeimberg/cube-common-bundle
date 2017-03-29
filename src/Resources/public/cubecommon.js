@@ -138,4 +138,71 @@ if (typeof(cubetools) === 'undefined') {
         var evt = $.Event('cubetools.colselector.column_settings_saved_failed');
         btn.trigger(evt, [textStatus, errorThrown]); // for id, see above
     };
+
+    var bootstrap = {};
+
+    bootstrap.getContentColumnPopover = function (btn) {
+        var id = btn.attr('id') || '';
+        var hidableCols = cs.getHidableSettings(id);
+        var htmlContent = btn.data('colSelContent');
+        if (!htmlContent) {
+            var content = $('#popoverContentTemplate').clone().attr('id', null);
+            content.find('input[name=id]').val(id);
+            var formFieldsTemplate = content.find(".columnSelection").eq(0);
+            var fieldParent = formFieldsTemplate.parent();
+            for(var colId in hidableCols) {
+                var columnFields = formFieldsTemplate.clone().show();
+                var colData = hidableCols[colId];
+                columnFields.find('label').attr('for', colId).children(':not(:input)').eq(0).text($('#'+colId).text());
+                columnFields.find('input').attr('name', colId).attr('checked', !colData.hidden);
+                fieldParent.append(columnFields);
+            }
+            formFieldsTemplate.remove();
+            var html = content.html();
+            btn.data('colSelContent', html);
+        } else {
+            var content = $(htmlContent).wrap('<div>').parent(); // wrap because html() returns inner html
+            var columnFields = content.find(".columnSelection");
+            for(var colId in hidableCols) {
+                var colData = hidableCols[colId];
+                columnFields.find('input[name='+colId+']').attr('checked', !colData.hidden);
+            }
+            var html = content.html();
+        }
+
+        return html;
+    };
+
+    bootstrap.closePopover = function (/* event */) {
+        var id = $(this).closest('form').find('input[name=id]').val();
+        var btn = cs.getButtonForId(id);
+        btn.popover('hide');
+    };
+
+    bootstrap.updateColumnHidden = function (/* event */) {
+        var inp = $(this);
+        cs.updateColumnView(inp.attr('name'), !inp.prop('checked'));
+    };
+
+    cs.initializeBootstrapPopover = function (title, closeBtnSelector, checkboxSelector, rootSelector) {
+        if ('undefined' === typeof(closeBtnSelector)) {
+            closeBtnSelector = '.colSelCloseBtn';
+        }
+        if ('undefined' === typeof(checkboxSelector)) {
+            checkboxSelector = 'form.colSelForm .columnSelection input';
+        }
+        if ('undefined' === typeof(rootSelector)) {
+            rootSelector = document.body;
+        }
+        $('.colsSelector').popover({
+            placement: 'right',
+            html: true,
+            title: '<button type="button" class="close colSelCloseBtn" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+title,
+            content: function() {
+                return bootstrap.getContentColumnPopover($(this));
+            }
+        });
+        $(rootSelector).on('click', closeBtnSelector, bootstrap.closePopover);
+        $(rootSelector).on('change', checkboxSelector, bootstrap.updateColumnHidden);
+    };
 })();
