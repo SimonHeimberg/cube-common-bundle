@@ -9,7 +9,7 @@
             function report_bug() {
                 // get x-debug-token from debug toolbar
                 var wdtId = $('.sf-toolbar').attr('id');
-                if (wdtId.startsWith('sfwdt')) {
+                if (wdtId && wdtId.startsWith('sfwdt')) {
                     var profilerToken = wdtId.substr(5);
                 } else {
                     var profilerToken = '';
