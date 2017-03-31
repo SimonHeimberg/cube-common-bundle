@@ -30,6 +30,7 @@ class DevelopmentSupportController extends Controller
 
         $relatedUrl = $request->query->get('relatedUrl', $this);
         $profilerToken = $request->query->get('profiler');
+        $userAgent = $request->query->get('userAgent');
 
         $baseUrl = $request->getHttpHost().$request->getBaseUrl();
         if ($this === $relatedUrl) {
@@ -48,14 +49,17 @@ class DevelopmentSupportController extends Controller
         }
 
         // $module = guess module from prev url?
-        $link = $this->generateBugLink($githubProjectUrl, $version, $verHash, $profilerToken, $relatedUrl);
+        $link = $this->generateBugLink($githubProjectUrl, $version, $verHash, $profilerToken, $relatedUrl, $userAgent);
 
         return $this->redirect($link);
     }
 
-    private function generateBugLink($githubProjectUrl, $version, $verHash, $profiler, $relatedUrl = 'XXurlXX', $module = 'XXmoduleXX')
+    private function generateBugLink($githubProjectUrl, $version, $verHash, $profiler, $relatedUrl = 'XXurlXX', $userAgent = null, $module = 'XXmoduleXX')
     {
-        $msgBody = "\n\n<hr/>\n\nversion = ".$version.'  '.substr($verHash, 0, 8)."\nurl = ".$relatedUrl;
+        if (!$userAgent) {
+            $userAgent = 'XXbrowserXX';
+        }
+        $msgBody = "\n\n<hr/>\n\nversion = ".$version.'  '.substr($verHash, 0, 8)."\nurl = ".$relatedUrl."\nbrowser = ".$userAgent;
         if ($profiler) {
             $profilerUrl = $this->generateUrl(
                 '_profiler',

@@ -14,7 +14,8 @@
                 } else {
                     var profilerToken = '';
                 }
-                var queryParam = 'relatedUrl=' + encodeURIComponent(window.location) + '&profiler=' + profilerToken;
+                var queryParam = 'relatedUrl=' + encodeURIComponent(window.location) + '&profiler=' + profilerToken +
+                        '&userAgent=' + navigator.userAgent;
                 open('{{ path("cube_common.reportbug") }}?' + queryParam, '_blank');
                 return false;
             }
