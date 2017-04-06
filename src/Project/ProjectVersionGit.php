@@ -108,10 +108,20 @@ class ProjectVersionGit
 
     protected function queryGitData()
     {
+        $R = 'https://';
         $data = array();
         $data['hash'] = exec('git rev-parse HEAD');
         $url = exec('git config --get remote.origin.url');
-        $data['url'] = strtr($url, array('.git' => '', 'ssh://' => 'https://', 'git://' => 'https://'));
+        if (false !== $atPos = strpos($url, '@')) { // user@host:path/to
+            $dPos = strpos($url, ':');
+            if (false !== $dPos && $dPos > $atPos) {
+                $url[$dPos] = '/';
+                $url = $R.substr($url, $atPos + 1);
+            } elseif ('/' === $url[$dPos+1] && '/' === $url[$dPos+2]) { // xxx://
+                $url = substr_replace($url, '', $dPos + 3, $atPos - $dPos - 2);
+            }
+        }
+        $data['url'] = strtr($url, array('.git' => '', 'ssh://' => $R, 'git://' => $R, 'ftp://' => $R, 'ftps://' => $R, 'rsync://' => $R));
         $data['tag'] = exec('git describe --tags --always');
 
         return $data;
