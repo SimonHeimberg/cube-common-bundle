@@ -5,6 +5,10 @@
   </head>
   <body>
     <h1>report bug</h1>
+    <p>When you have to sign in on github, click "back" 2x after. (To come back here and resend.)</p>
+    {% if redirect %}
+        <p>Will redirect in {{ redirect }} seconds to <a href="{{ directLink }}">{{ directLink|slice(0, 73) }}...</a>.</p>
+    {% endif %}
     <form>
         <div>
             <label>related url:</label> <input name="relatedUrl" value="{{ relatedUrl }}" type="url"/>
@@ -16,7 +20,6 @@
         </div>
         <input value="report bug" type="submit"/>
     </form>
-    <div>When you have to sign in on github, click "back" after and then "F5" to fill in the bug data.</div>
     <a href="{{ directLink }}">report bug only with version prefilled</a>
   </body>
 </html>

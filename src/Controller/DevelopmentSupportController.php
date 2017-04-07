@@ -31,31 +31,42 @@ class DevelopmentSupportController extends Controller
         $relatedUrl = $request->query->get('relatedUrl', $this);
         $profilerToken = $request->query->get('profiler');
         $userAgent = $request->query->get('userAgent');
+        // $module = guess module from prev url?
 
         $baseUrl = $request->getHttpHost().$request->getBaseUrl();
         if ($this === $relatedUrl) {
             $relatedUrl = $request->headers->get('referer');
         }
         $urlOffset = strpos($relatedUrl, $baseUrl);
-        if (false === $urlOffset) {
-            // not enough information
-            return $this->render('CubeToolsCubeCommonBundle:DevelopmentSupport:reportBug.html.twig', array(
-                'baseUrl' => $baseUrl,
-                'relatedUrl' => $relatedUrl,
-                'projectName' => basename($githubProjectUrl),
-                'directLink' => $this->generateBugLink($githubProjectUrl, $version, $verHash, $profilerToken),
-                'profilerToken' => $profilerToken,
-            ));
+        if (false !== $urlOffset) {
+            $redirectDelay = 2;
+            $reallyRelated = $relatedUrl;
+        } else {
+            $redirectDelay = null;
+            $reallyRelated = null;
+        }
+        $link = $this->generateBugLink($githubProjectUrl, $version, $verHash, $profilerToken, $reallyRelated, $userAgent);
+        $args = array(
+            'redirect' => $redirectDelay,
+            'baseUrl' => $baseUrl,
+            'relatedUrl' => $relatedUrl,
+            'projectName' => basename($githubProjectUrl),
+            'profilerToken' => $profilerToken,
+            'directLink' => $link,
+        );
+        $response = $this->render('CubeToolsCubeCommonBundle:DevelopmentSupport:reportBug.html.twig', $args);
+        if (null !== $redirectDelay) {
+            $response->headers->set('refresh', $redirectDelay.'; url='.$link);
         }
 
-        // $module = guess module from prev url?
-        $link = $this->generateBugLink($githubProjectUrl, $version, $verHash, $profilerToken, $relatedUrl, $userAgent);
-
-        return $this->redirect($link);
+        return $response;
     }
 
-    private function generateBugLink($githubProjectUrl, $version, $verHash, $profiler, $relatedUrl = 'XXurlXX', $userAgent = null, $module = 'XXmoduleXX')
+    private function generateBugLink($githubProjectUrl, $version, $verHash, $profiler, $relatedUrl, $userAgent = null, $module = 'XXmoduleXX')
     {
+        if (!$relatedUrl) {
+            $relatedUrl = 'XXXurlXXX';
+        }
         if (!$userAgent) {
             $userAgent = 'XXbrowserXX';
         }
