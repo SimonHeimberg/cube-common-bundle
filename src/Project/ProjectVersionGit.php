@@ -100,6 +100,7 @@ class ProjectVersionGit
             $resources = array(new FileResource($headFile));
             $data = $this->queryGitData();
         }
+        $resources[] = new FileResource($gitDir.'config');
         $cache->write(json_encode($data), $resources);
         $this->data = $data;
 
