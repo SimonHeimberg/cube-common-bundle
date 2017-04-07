@@ -57,3 +57,17 @@ To give access to routing information, import routing into `app/config/routing.y
 _cube_common:
     resource: "@CubeToolsCubeCommonBundle/Resources/config/routing/all.yml"
 ```
+
+Step 4: Set user class
+----------------------
+
+To use the ccb.usersettings service, set your User class in `app/config/config.yml`.
+```yaml
+# app/config/config.yml
+doctrine:
+    # ...
+    orm:
+        # ...
+        resolve_target_entities:
+            Symfony\Component\Security\Core\User\UserInterface: YourBundle\Entity\YourUser
+```
