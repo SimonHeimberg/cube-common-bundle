@@ -1,0 +1,30 @@
+{% macro nearButton(id) %}
+    {{ render(controller(
+        'CubeToolsCubeCommonBundle:ColsSelector:nearButton',
+        {'path': app.request.getPathInfo(), 'id': id|default('')}
+    )) }}
+{% endmacro %}
+
+{% macro afterColumnSelectionTables() %}
+    <script> /*colSettings*/
+    (function () {
+        if (typeof(cubetools) === 'undefined') {
+           cubetools = {};
+        }
+        cubetools.colsSelector || ( cubetools.colsSelector = {} );
+        var cs = cubetools.colsSelector;
+
+        cs.selectorSendUrl = "{{ path('cubecommon.colsselector_send') }}";
+        $(document).ready(function() {
+            if (!cs.initializeColsSelection) {
+                console.warn('cubecommon.js is not imported!');
+            } else {
+                cs.initializeColsSelection({{ render(controller(
+                    'CubeToolsCubeCommonBundle:ColsSelector:getTablesSettings',
+                    {'path': app.request.getPathInfo()}
+                )) }});
+            }
+        });
+    })();
+    </script>
+{% endmacro %}

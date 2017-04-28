@@ -57,3 +57,20 @@ To give access to routing information, import routing into `app/config/routing.y
 _cube_common:
     resource: "@CubeToolsCubeCommonBundle/Resources/config/routing/all.yml"
 ```
+
+Step 4 (optional): Set different user class
+-------------------------------------------
+
+When FosUserBundle is enabled, the user class is set to the one configured for
+this bundle.
+To use a different user class (for the cube_common.user_settings service), set
+your User class in `app/config/config.yml`.
+```yaml
+# app/config/config.yml
+doctrine:
+    # ...
+    orm:
+        # ...
+        resolve_target_entities:
+            Symfony\Component\Security\Core\User\UserInterface: YourBundle\Entity\YourUser
+```
