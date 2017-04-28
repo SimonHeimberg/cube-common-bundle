@@ -58,10 +58,13 @@ _cube_common:
     resource: "@CubeToolsCubeCommonBundle/Resources/config/routing/all.yml"
 ```
 
-Step 4: Set user class
-----------------------
+Step 4 (optional): Set different user class
+-------------------------------------------
 
-To use the ccb.usersettings service, set your User class in `app/config/config.yml`.
+When FosUserBundle is enabled, the user class is set to the one configured for
+this bundle.
+To use a different user class (for the cube_common.user_settings service), set
+your User class in `app/config/config.yml`.
 ```yaml
 # app/config/config.yml
 doctrine:
