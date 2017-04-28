@@ -6,3 +6,8 @@ services:
         arguments:
             - %kernel.root_dir%
             - %kernel.cache_dir%
+    cube_common.user_settings:
+        class: CubeTools\CubeCommonBundle\UserSettings\UserSettingsStorage
+        arguments:
+            - "@doctrine"
+            - "@security.token_storage"

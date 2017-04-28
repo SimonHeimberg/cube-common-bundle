@@ -79,7 +79,7 @@ class ColsSelectorController extends Controller
     protected function getColsSettings($saveId)
     {
         try {
-            return $this->get('app.columnSettingsLoadSave')->getColSettings($saveId);
+            return $this->get('cube_common.user_settings')->getUserSetting('column', $saveId);
         } catch (ServiceNotFoundException $se) {
             $msg = 'ERROR: missing service; '.$se->getMessage();
             if (function_exists('dump')) {
@@ -96,7 +96,7 @@ class ColsSelectorController extends Controller
         DataConversion::dataTextToDataInArray($settings);
 
         // error is handled by ajax caller
-        return $this->get('app.columnSettingsLoadSave')->setColSettings($saveId, $settings);
+        return $this->get('cube_common.user_settings')->setUserSetting('column', $saveId, $settings);
     }
 
     /**
