@@ -161,7 +161,7 @@ if (typeof(cubetools) === 'undefined') {
             var html = content.html();
             btn.data('colSelContent', html);
         } else {
-            var content = $(htmlContent).wrap('<div>').parent(); // wrap because html() returns inner html
+            var content = $('<div>').append(htmlContent); // <div> because html() returns inner html
             var columnFields = content.find(".columnSelection");
             for(var colId in hidableCols) {
                 var colData = hidableCols[colId];
