@@ -34,7 +34,7 @@
             "@cube-post-install-update"
         ],
         "cube-post-install-update": [
-            "vendor/cubetools/cube-common-develop/src/Workplace/netbeans_config_cube.sh"
+            "[ -d vendor/cubetools/cube-common-develop ] && vendor/cubetools/cube-common-develop/src/Workplace/netbeans_config_cube.sh"
         ]
     }
 }
