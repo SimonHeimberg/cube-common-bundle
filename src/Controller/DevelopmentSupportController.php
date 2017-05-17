@@ -28,6 +28,27 @@ class DevelopmentSupportController extends Controller
         $version = $projVer->getVersionString();
         $verHash = $projVer->getGitHash();
 
+        $reqInfo = $this->requestHandling($request);
+        
+        $link = $this->generateBugLink($githubProjectUrl, $version, $verHash, $reqInfo['profilerToken'], $reqInfo['reallyRelated'], $reqInfo['userAgent']);
+        $args = array(
+            'redirect' => $reqInfo['redirectDelay'],
+            'baseUrl' => $reqInfo['baseUrl'],
+            'relatedUrl' => $reqInfo['relatedUrl'],
+            'projectName' => basename($githubProjectUrl),
+            'profilerToken' => $reqInfo['profilerToken'],
+            'directLink' => $link,
+        );
+        $response = $this->render('CubeToolsCubeCommonBundle:DevelopmentSupport:reportBug.html.twig', $args);
+        if (null !== $reqInfo['redirectDelay']) {
+            $response->headers->set('refresh', $reqInfo['redirectDelay'].'; url='.$link);
+        }
+
+        return $response;
+    }
+
+    private function requestHandling(Request $request)
+    {
         $relatedUrl = $request->query->get('relatedUrl', $this);
         $profilerToken = $request->query->get('profiler');
         $userAgent = $request->query->get('userAgent');
@@ -45,21 +66,15 @@ class DevelopmentSupportController extends Controller
             $redirectDelay = null;
             $reallyRelated = null;
         }
-        $link = $this->generateBugLink($githubProjectUrl, $version, $verHash, $profilerToken, $reallyRelated, $userAgent);
-        $args = array(
-            'redirect' => $redirectDelay,
-            'baseUrl' => $baseUrl,
-            'relatedUrl' => $relatedUrl,
-            'projectName' => basename($githubProjectUrl),
-            'profilerToken' => $profilerToken,
-            'directLink' => $link,
-        );
-        $response = $this->render('CubeToolsCubeCommonBundle:DevelopmentSupport:reportBug.html.twig', $args);
-        if (null !== $redirectDelay) {
-            $response->headers->set('refresh', $redirectDelay.'; url='.$link);
-        }
 
-        return $response;
+        return array(
+            'relatedUrl' => $relatedUrl,
+            'profilerToken' => $profilerToken,
+            'userAgent' => $userAgent,
+            'baseUrl' => $baseUrl,
+            'redirectDelay' => $redirectDelay,
+            'reallyRelated' => $reallyRelated,
+        );
     }
 
     private function generateBugLink($githubProjectUrl, $version, $verHash, $profiler, $relatedUrl, $userAgent = null, $module = 'XXmoduleXX')
