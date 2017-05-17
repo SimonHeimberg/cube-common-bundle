@@ -118,7 +118,7 @@ class ProjectVersionGit
             if (false !== $dPos && $dPos > $atPos) {
                 $url[$dPos] = '/';
                 $url = $R.substr($url, $atPos + 1);
-            } elseif ('/' === $url[$dPos+1] && '/' === $url[$dPos+2]) { // xxx://
+            } elseif ('/' === $url[$dPos+1] && '/' === $url[$dPos+2]) { // proto://
                 $url = substr_replace($url, '', $dPos + 3, $atPos - $dPos - 2);
             }
         }
