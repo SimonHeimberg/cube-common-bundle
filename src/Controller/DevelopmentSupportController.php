@@ -54,6 +54,9 @@ class DevelopmentSupportController extends Controller
         $relatedUrl = $request->query->get('relatedUrl', $this);
         $profilerToken = $request->query->get('profiler');
         $userAgent = $request->query->get('userAgent');
+        if (!$userAgent) {
+            $userAgent = $request->headers->get('user-agent');
+        }
         // $module = guess module from prev url?
 
         $baseUrl = $request->getHttpHost().$request->getBaseUrl();
