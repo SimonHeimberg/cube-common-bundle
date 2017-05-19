@@ -9,6 +9,13 @@
     {% if redirect %}
         <p>Will redirect in {{ redirect }} seconds to <a href="{{ directLink }}">{{ directLink|slice(0, 73) }}...</a>.</p>
     {% endif %}
+    <div>You can abort with escape (multiple times) and copy the message from below.</div>
+    <hr/>
+    <div>
+        {{ msg | nl2br }}
+    </div>
+    <hr/>
+    <div>Manually create message:</div>
     <form>
         <div>
             <label>related url:</label> <input name="relatedUrl" value="{{ relatedUrl }}" type="url"/>
