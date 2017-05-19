@@ -30,7 +30,8 @@ class DevelopmentSupportController extends Controller
 
         $reqInfo = $this->requestHandling($request);
 
-        $link = $this->generateBugLink($githubProjectUrl, $version, $verHash, $reqInfo['profilerToken'], $reqInfo['reallyRelated'], $reqInfo['userAgent']);
+        $msg = $this->generateBugMsg($version, $verHash, $reqInfo);
+        $link = $this->generateBugLink($githubProjectUrl, $msg);
         $args = array(
             'redirect' => $reqInfo['redirectDelay'],
             'baseUrl' => $reqInfo['baseUrl'],
@@ -38,6 +39,7 @@ class DevelopmentSupportController extends Controller
             'projectName' => basename($githubProjectUrl),
             'profilerToken' => $reqInfo['profilerToken'],
             'directLink' => $link,
+            'msg' => $msg,
         );
         $response = $this->render('CubeToolsCubeCommonBundle:DevelopmentSupport:reportBug.html.twig', $args);
         if (null !== $reqInfo['redirectDelay']) {
@@ -77,8 +79,10 @@ class DevelopmentSupportController extends Controller
         );
     }
 
-    private function generateBugLink($githubProjectUrl, $version, $verHash, $profiler, $relatedUrl, $userAgent = null, $module = 'XXmoduleXX')
+    private function generateBugMsg($version, $verHash, $reqInfo)
     {
+        $relatedUrl = $reqInfo['reallyRelated'];
+        $userAgent = $reqInfo['userAgent'];
         if (!$relatedUrl) {
             $relatedUrl = 'XXXurlXXX';
         }
@@ -86,15 +90,20 @@ class DevelopmentSupportController extends Controller
             $userAgent = 'XXbrowserXX';
         }
         $msgBody = "\n\n<hr/>\n\nversion = ".$version.'  '.substr($verHash, 0, 8)."\nurl = ".$relatedUrl."\nbrowser = ".$userAgent;
-        if ($profiler) {
+        if ($reqInfo['profilerToken']) {
             $profilerUrl = $this->generateUrl(
                 '_profiler',
-                array('token' => $profiler),
+                array('token' => $reqInfo['profilerToken']),
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
-            $msgBody .= "\nprofiler: [".$profiler.']('.$profilerUrl.')';
+            $msgBody .= "\nprofiler: [".$reqInfo['profilerToken'].']('.$profilerUrl.')';
         }
 
+        return $msgBody;
+    }
+
+    private function generateBugLink($githubProjectUrl, $msgBody, $module = 'XXmoduleXX')
+    {
         return $githubProjectUrl.'/issues/new?HINT= SIGN IN! &title='.urlencode('['.$module.']').
                 '&body='.urlencode($msgBody);
     }
