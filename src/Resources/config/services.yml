@@ -17,3 +17,7 @@ services:
             - "@request_stack"
         calls:
             - [setPaginator, ['@?knp_paginator']]
+    cube_common.session_keep_on_success:
+        class: CubeTools\CubeCommonBundle\Session\KeepOnSuccessEventListener
+        tags:
+            - { name: kernel.event_subscriber }
