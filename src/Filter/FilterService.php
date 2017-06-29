@@ -7,18 +7,16 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Knp\Component\Pager\PaginatorInterface;
 
 /**
- * Description of FilterService
+ * Service for convenient filtering.
  */
 class FilterService
 {
     /**
-     *
      * @var RequestStack
      */
     private $rStack;
 
     /**
-     *
      * @var PaginatorInterface
      */
     private $paginator;
@@ -28,8 +26,8 @@ class FilterService
         $this->rStack = $requestStack;
     }
 
-
-    /** get filter data from request or session
+    /**
+     * Get filter data from request or session.
      *
      * @param FormInterface $form     filter form generated from this class
      * @param string|null   $pageName for storing filter and page no in session
@@ -45,13 +43,13 @@ class FilterService
     }
 
     /**
-     * Save data into forms session,
+     * Save data into forms session.
      *
      * @param FormInterface $form
-     * @param array $data
-     * @param type $pageName
+     * @param array         $data
+     * @param type          $pageName
      *
-     * @return boolean false if form is invalid (and was not saved therefore)
+     * @return bool false if form is invalid (and was not saved therefore)
      */
     public function saveFilterData(FormInterface $form, array $data, $pageName = null)
     {
@@ -66,11 +64,12 @@ class FilterService
      *
      * @param type $formClassOrPageName name of page or class of form
      *
-     * @return many[] current saved filter data (in view/session format).
+     * @return many[] current saved filter data (in view/session format)
      */
     public function loadFilterData($formClassOrPageName)
     {
         $session = $this->rStack->getCurrentRequest()->getSession();
+
         return FilterSessionHelper::getFilterDataFromSession($session, $formClassOrPageName);
     }
 

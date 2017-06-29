@@ -5,40 +5,41 @@ namespace CubeTools\CubeCommonBundle\Filter;
 use Knp\Component\Pager\PaginatorInterface;
 
 /**
- * Description of FilterData
+ * FilterData contains filer values, sorting and pagination functionality.
  */
 class FilterData
 {
     /**
-     *
-     * @var FilterQueryCondition[]
+     * @var FilterQueryCondition
      */
     private $filter;
 
     /**
-     *
      * @var int
      */
     private $page;
 
     /**
-     *
      * @var array
      */
     private $options;
 
     /**
-     *
      * @var string|null
      */
     private $redirect;
 
     /**
-     *
      * @var PaginatorInterface
      */
     private $paginator;
 
+    /**
+     * Create filter data.
+     *
+     * @param array              $fData     filter data
+     * @param PaginatorInterface $paginator paginator (optional)
+     */
     public function __construct(array $fData, PaginatorInterface $paginator = null)
     {
         $this->redirect = $fData['redirect'];
@@ -51,7 +52,7 @@ class FilterData
     }
 
     /**
-     * get filter content
+     * Get filter content.
      *
      * @return FilterQueryCondition
      */
@@ -61,7 +62,7 @@ class FilterData
     }
 
     /**
-     * get options for paginator
+     * Get options for paginator.
      *
      * @return array
      */
@@ -71,7 +72,7 @@ class FilterData
     }
 
     /**
-     * get page to display
+     * Get page to display.
      *
      * @return int
      */
@@ -81,7 +82,7 @@ class FilterData
     }
 
     /**
-     * get url to redirect to, null if no redirect
+     * Get url to redirect to, null if no redirect.
      *
      * @return string|null
      */
@@ -162,7 +163,7 @@ class FilterData
      * The page and sorting are set automatically.
      *
      * @param midex $query   anything what needs to be paginated
-     * @param type $limit    number of items per page, defaults to 10
+     * @param type  $limit   number of items per page, defaults to 10
      * @param array $options less used options, @see PaginatorInterface::paginate
      *
      * @return \Knp\Component\Pager\Pagination\PaginationInterface

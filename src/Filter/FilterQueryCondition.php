@@ -5,13 +5,12 @@ namespace CubeTools\CubeCommonBundle\Filter;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * For easier filtering
+ * For easier filtering: access to filter data and creating query builder.
  */
 class FilterQueryCondition implements \ArrayAccess, \Countable
 {
     /**
-     *
-     * @var array  of form elements to use for filtering
+     * @var array of form elements to use for filtering
      */
     private $filter = array();
 
@@ -21,7 +20,7 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
     private $qb;
 
     /**
-     * @param array $filter  array of form elements (returned by $mainForm->getData())
+     * @param array $filter array of form elements (returned by $mainForm->getData())
      */
     public function __construct(array $filter = array())
     {
@@ -29,6 +28,8 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
     }
 
     /**
+     * {@inheritDoc}
+     *
      * when called: isset($fqd['x'])
      *
      * @param string $name name of the element
@@ -41,12 +42,14 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
     }
 
     /**
+     * {@inheritDoc}
+     *
      * when called: $fqd['x'] = y
      *
      * @param string $name  name of the element
      * @param any    $value value to set
      *
-     * @return any   the value, for chaining
+     * @return any the value, for chaining
      */
     public function offsetSet($name, $value)
     {
@@ -56,11 +59,13 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
     }
 
     /**
+     * {@inheritDoc}
+     *
      * when called: z = $fqd['x']
      *
-     * @param string $name  name of the element
+     * @param string $name name of the element
      *
-     * @return any   the value
+     * @return any the value
      */
     public function offsetGet($name)
     {
@@ -73,9 +78,11 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
     }
 
     /**
+     * {@inheritDoc}
+     *
      * when called: unset($fqd['x'])
      *
-     * @param string $name  name of the element
+     * @param string $name name of the element
      */
     public function offsetUnset($name)
     {
@@ -83,6 +90,8 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
     }
 
     /**
+     * {@inheritDoc}
+     *
      * when called: count($fqd['x'])
      *
      * @return int number of elements
@@ -112,9 +121,9 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
     /**
      * Checks if the filter element is active.
      *
-     * @param string name filter element name
+     * @param string $name filter element name
      *
-     * @return boolean    true when the filter elemment is active
+     * @return bool true when the filter elemment is active
      */
     public function isActive($name)
     {
@@ -132,9 +141,11 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
     }
 
     /**
-     * sets the query builder for creating filter queries later
+     * Sets the query builder for creating filter queries later.
      *
      * @param QueryBuilder $qb
+     *
+     * @return $this
      */
     public function setQuerybuilder($qb)
     {
@@ -148,9 +159,9 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
      *
      * It filters in $dbColumn of $table for equality with the values set in filter[$flterName]
      *
-     * @param string $table       name of database table
-     * @param string $filterName  name of filter element
-     * @param string $dbColumn    name of database column, defaults to $filterName
+     * @param string $table      name of database table
+     * @param string $filterName name of filter element
+     * @param string $dbColumn   name of database column, defaults to $filterName
      *
      * @return $this
      */

@@ -3,7 +3,7 @@
 namespace CubeTools\CubeCommonBundle\Filter;
 
 /**
- * General constants for filtering
+ * General constants for filtering.
  */
 class FilterConstants
 {

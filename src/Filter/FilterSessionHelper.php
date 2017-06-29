@@ -7,26 +7,27 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Description of FilterHelper
+ * Used by FilterService.
  */
 class FilterSessionHelper
 {
-    /** load filter from session
+    /**
+     * Load filter from session.
      *
      * @param SessionInterface $session
      * @param string           $pageName
-     * @param FormInterface    $form
      *
      * @return array of string
      */
     public static function getFilterDataFromSession(SessionInterface $session, $pageName)
     {
-        $filter = $session->get($pageName . '_filter');
+        $filter = $session->get($pageName.'_filter');
 
         return $filter;
     }
 
-    /** save filter to session
+    /**
+     * Save filter to session.
      *
      * @param SessionInterface $session
      * @param string           $pageName
@@ -44,11 +45,11 @@ class FilterSessionHelper
             hash_update($hashCtx, is_array($f) ? implode(';', $f) : $f);
         }
         $hash = hash_final($hashCtx);
-        if ($session->get($pageName .'_filter_Hash') !== $hash) {
+        if ($session->get($pageName.'_filter_Hash') !== $hash) {
             //filter has changed
-            $session->remove($pageName . '_page');
-            $session->set($pageName . '_filter', $filter);
-            $session->set($pageName . '_filter_Hash', $hash);
+            $session->remove($pageName.'_page');
+            $session->set($pageName.'_filter', $filter);
+            $session->set($pageName.'_filter_Hash', $hash);
         }
     }
 
@@ -64,7 +65,8 @@ class FilterSessionHelper
         return false;
     }
 
-    /** get filter data from request or session
+    /**
+     *  Get filter data from request or session.
      *
      * @param Request       $request
      * @param FormInterface $form     filter form generated from this class
