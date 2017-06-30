@@ -29,7 +29,7 @@ class DevelopmentSupportController extends Controller
         $verHash = $projVer->getGitHash();
 
         $reqInfo = $this->requestHandling($request);
-        
+
         $link = $this->generateBugLink($githubProjectUrl, $version, $verHash, $reqInfo['profilerToken'], $reqInfo['reallyRelated'], $reqInfo['userAgent']);
         $args = array(
             'redirect' => $reqInfo['redirectDelay'],

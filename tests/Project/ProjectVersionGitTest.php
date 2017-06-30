@@ -55,7 +55,7 @@ class ProjectVersionGitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * dataprovider to run tests 2x, once with querried data, once form cache
+     * dataprovider to run tests 2x, once with querried data, once form cache.
      */
     public static function cacheChecking()
     {

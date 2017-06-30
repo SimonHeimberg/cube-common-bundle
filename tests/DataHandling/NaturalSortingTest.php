@@ -9,7 +9,7 @@ class NaturalSortingTest extends \PHPUnit_Framework_TestCase
     /**
      * @var array subsequent elements are all unique identifiers for test procedures
      */
-    protected $testProceduresUnsorted = array (
+    protected $testProceduresUnsorted = array(
         0 => 'UC37-TP1',
         1 => 'UC64-TP1',
         2 => 'UC37-TP2',
@@ -535,63 +535,65 @@ class NaturalSortingTest extends \PHPUnit_Framework_TestCase
         1140 => 'PB-TP13',
         1141 => 'UC28-TP8',
       );
-    
+
     /**
-     * @var NaturalSorting 
+     * @var NaturalSorting
      */
     protected $testObject;
-    
+
     public function setUp()
     {
         $this->testObject = new NaturalSorting();
         $this->testObject->setIntegerPartLength(4);
         $this->testObject->setFloatPartLength(3);
     }
-    
+
     /**
-     * Testing action on one method
+     * Testing action on one method.
      */
     public function testGetValueForNaturalSortingBasic()
     {
-        $this->assertEquals('UC0050000-TP0010000-WX0003020-W0003009', 
-                $this->testObject->getValueForNaturalSorting('UC50-TP10-WX3.20-W3.9'), 
-                'Column not formatted properly!');
+        $this->assertEquals(
+                'UC0050000-TP0010000-WX0003020-W0003009',
+                $this->testObject->getValueForNaturalSorting('UC50-TP10-WX3.20-W3.9'),
+                'Column not formatted properly!'
+            );
     }
-         
+
     /**
-     * Testing action on one method with size limit
+     * Testing action on one method with size limit.
      */
     public function testGetValueForNaturalSortingLengthLimit()
     {
         $longTitle = 'FIT-TrISkkjlkjlkjlkl';
         $shortTitle = 'FIT-';
-        
+
         $this->testObject->setNaturalSortingValueMaximalLength(4);
-        $this->assertEquals( $shortTitle,
+        $this->assertEquals(
+                $shortTitle,
                 $this->testObject->getValueForNaturalSorting($longTitle),
                 'Size limit not working correctly'
         );
     }
-    
+
     /**
-     * Method gets all identifier
+     * Method gets all identifier.
      */
     public function testGetValueForNaturalSortingPhpSort()
     {
         $sortPhpNatural = $this->testProceduresUnsorted;
         $sortPhpRegular = $this->testProceduresUnsorted;
-        
+
         foreach ($sortPhpRegular as $identifierKey => $identifierValue) {
             $sortPhpRegular[$identifierKey] = $this->testObject->getValueForNaturalSorting($identifierValue);
         }
-        
+
         sort($sortPhpNatural, SORT_NATURAL);
         sort($sortPhpRegular, SORT_STRING);
-        
+
         foreach ($sortPhpNatural as $identifierKey => $identifierValue) {
             $valueForNaturalSorting = $this->testObject->getValueForNaturalSorting($identifierValue);
             $this->assertEquals($sortPhpRegular[$identifierKey], $valueForNaturalSorting, 'Sorted element not proper!');
         }
     }
 }
-
