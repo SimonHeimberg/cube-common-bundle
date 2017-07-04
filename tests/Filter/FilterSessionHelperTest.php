@@ -31,6 +31,31 @@ class FilterSessionHelperTest extends FormIntegrationTestCase // this class has 
         FilterSessionHelper::setFilterDataToSession($mSess, $pageName, $filter, static::NO_ON_SUCCESS_KEEP_FN);
         $this->assertSame($filter, $tFilter);
         $this->assertSame($filter, FilterSessionHelper::getFilterDataFromSession($mSess, $pageName));
+
+        return array('filter' => $filter, 'mSess' => $mSess, 'pageName' => $pageName);
+    }
+
+    /**
+     * Tests if callback of setFilterDataToSession is called in the correct places.
+     *
+     * @depends testSessionGetSet
+     */
+    public function testSessionSetCallback(array $dep1)
+    {
+        $filter = $dep1['filter'];
+        $mSess = $dep1['mSess'];
+        $pageName = $dep1['pageName'];
+
+        FilterSessionHelper::setFilterDataToSession($mSess, $pageName, $filter, array($this, 'invalid_cbk'));
+        $this->assertTrue(true, 'callback not called on same data');
+
+        $mockCbk = $this->getMockBuilder(stdClass::class)->setMethods(array('cbk'))->getMock();
+        $mockCbk->expects($this->once())->method('cbk')->with(
+            $this->equalTo($mSess),
+            $this->contains($pageName.'_filter')
+        );
+        $filter['g'] = 'gg';
+        FilterSessionHelper::setFilterDataToSession($mSess, $pageName, $filter, array($mockCbk, 'cbk'));
     }
 
     public function testGetFilterDataReset()
