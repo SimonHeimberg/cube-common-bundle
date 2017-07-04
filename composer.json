@@ -15,7 +15,13 @@
         "symfony/config": "^2.7|^3.0"
     },
     "require-dev": {
-        "cubetools/cube-common-develop": "dev-development@dev"
+        "cubetools/cube-common-develop": "dev-development@dev",
+        "symfony/form": "^2.7|^3.0",
+        "symfony/http-foundation": "^2.7|^3.0"
+    },
+    "suggest": {
+        "symfony/form": "for Form\\*",
+        "symfony/http-foundation": "for Form\\*Session"
     },
     "autoload": {
         "psr-4": {"CubeTools\\CubeCommonBundle\\": "src/"}
