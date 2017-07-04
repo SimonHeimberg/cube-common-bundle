@@ -13,7 +13,7 @@ use CubeTools\CubeCommonBundle\Filter\FilterSessionHelper;
 class FilterSessionHelperTest extends FormIntegrationTestCase // this class has $this->form
 {
     /**
-     * tests getFilterDataFromSession and setFilterDataToSession
+     * Tests getFilterDataFromSession and setFilterDataToSession.
      */
     public function testSessionGetSet()
     {
@@ -36,7 +36,7 @@ class FilterSessionHelperTest extends FormIntegrationTestCase // this class has 
         $mReq->setSession($mSes);
 
         $type = $this->getMockBuilder(DummyFilterType::class)->setMethods(null)->getMock();
-        $form = $this->factory->create($type);
+        $form = $this->factory->create(get_class($type));
 
         $d = FilterSessionHelper::getFilterData($mReq, $form);
         $this->assertSame($thisUrl, $d['redirect']);
@@ -49,7 +49,7 @@ class FilterSessionHelperTest extends FormIntegrationTestCase // this class has 
         $mReq->setSession($mSes);
 
         $type = $this->getMockBuilder(DummyFilterType::class)->setMethods(null)->getMock();
-        $bldr = $this->factory->createBuilder($type);
+        $bldr = $this->factory->createBuilder(get_class($type));
         $bldr->add('someChild');
         $bldr->setRequestHandler(new HttpFoundationRequestHandler());
         $form = $bldr->getForm();
