@@ -13,6 +13,11 @@ use CubeTools\CubeCommonBundle\Filter\FilterSessionHelper;
 class FilterSessionHelperTest extends FormIntegrationTestCase // this class has $this->form
 {
     /**
+     * no callback function.
+     */
+    const NO_ON_SUCCESS_KEEP_FN = null;
+
+    /**
      * Tests getFilterDataFromSession and setFilterDataToSession.
      */
     public function testSessionGetSet()
@@ -23,7 +28,7 @@ class FilterSessionHelperTest extends FormIntegrationTestCase // this class has 
         $this->assertNull(FilterSessionHelper::getFilterDataFromSession($mSess, $pageName));
         $filter = array('g' => 'G', 'h' => 'H');
         $tFilter = $filter;
-        FilterSessionHelper::setFilterDataToSession($mSess, $pageName, $filter);
+        FilterSessionHelper::setFilterDataToSession($mSess, $pageName, $filter, static::NO_ON_SUCCESS_KEEP_FN);
         $this->assertSame($filter, $tFilter);
         $this->assertSame($filter, FilterSessionHelper::getFilterDataFromSession($mSess, $pageName));
     }
@@ -38,7 +43,7 @@ class FilterSessionHelperTest extends FormIntegrationTestCase // this class has 
         $type = $this->getMockBuilder(DummyFilterType::class)->setMethods(null)->getMock();
         $form = $this->factory->create(get_class($type));
 
-        $d = FilterSessionHelper::getFilterData($mReq, $form);
+        $d = FilterSessionHelper::getFilterData($mReq, $form, 'pageName_gfdr', static::NO_ON_SUCCESS_KEEP_FN);
         $this->assertSame($thisUrl, $d['redirect']);
     }
 
@@ -54,7 +59,7 @@ class FilterSessionHelperTest extends FormIntegrationTestCase // this class has 
         $bldr->setRequestHandler(new HttpFoundationRequestHandler());
         $form = $bldr->getForm();
 
-        $d = FilterSessionHelper::getFilterData($mReq, $form);
+        $d = FilterSessionHelper::getFilterData($mReq, $form, 'pageName_gfd', static::NO_ON_SUCCESS_KEEP_FN);
 
         $d1 = $d;
         unset($d1['filter']);

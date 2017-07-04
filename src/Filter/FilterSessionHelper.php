@@ -33,7 +33,7 @@ class FilterSessionHelper
      * @param string           $pageName
      * @param array            $filter
      */
-    public static function setFilterDataToSession(SessionInterface $session, $pageName, array $filter)
+    public static function setFilterDataToSession(SessionInterface $session, $pageName, array $filter, $onSuccessKeepFn)
     {
         $hashCtx = hash_init('md5');
         foreach ($filter as $n => $f) {
@@ -47,17 +47,20 @@ class FilterSessionHelper
         $hash = hash_final($hashCtx);
         if ($session->get($pageName.'_filter_Hash') !== $hash) {
             //filter has changed
+            if ($onSuccessKeepFn) {
+                $onSuccessKeepFn($session, array($pageName.'_filter', $pageName.'_filter_Hash'));
+            }
             $session->remove($pageName.'_page');
             $session->set($pageName.'_filter', $filter);
             $session->set($pageName.'_filter_Hash', $hash);
         }
     }
 
-    public function saveFilterData(Request $request, FormInterface $form, array $data, $pageName)
+    public function saveFilterData(Request $request, FormInterface $form, array $data, $pageName, $onSuccessKeepFn)
     {
         $form->submit($data);
         if ($form->isSubmitted() && $form->isValid()) {
-            static::setFilterDataToSession($request->getSession(), $pageName, $data);
+            static::setFilterDataToSession($request->getSession(), $pageName, $data, $onSuccessKeepFn);
 
             return true;
         }
@@ -74,18 +77,18 @@ class FilterSessionHelper
      *
      * @return array with redirect (URL or null), filter (FilterQueryCondition) and page nr (int)
      */
-    public static function getFilterData(Request $request, FormInterface $form, $pageName = null)
+    public static function getFilterData(Request $request, FormInterface $form, $pageName, $onSuccessKeepFn)
     {
         $session = $request->getSession();
         if ('1' == $request->query->get('filter_reset')) {
-            static::setFilterDataToSession($session, $pageName, array());
+            static::setFilterDataToSession($session, $pageName, array(), null);
 
             return array('redirect' => $request->getBaseUrl().$request->getPathInfo());
         }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // use all() because getViewData() does not work as expected
-            static::setFilterDataToSession($session, $pageName, $form->all());
+            static::setFilterDataToSession($session, $pageName, $form->all(), $onSuccessKeepFn);
             if ($request->getMethod() !== 'GET') {
                 return array('redirect' => $request->getBaseUrl().$request->getPathInfo());
                     // do not use getRequestUri because includes the query parameter (?page=3)
@@ -106,7 +109,7 @@ class FilterSessionHelper
             }
         }
 
-        $fData = static::prepareFilterData($request, $pageName, $form->getConfig()->getOptions());
+        $fData = static::prepareFilterData($request, $pageName, $form->getConfig()->getOptions(), $onSuccessKeepFn);
         $fData['filter'] = new FilterQueryCondition($filter);
 
         return $fData;
@@ -125,7 +128,7 @@ class FilterSessionHelper
         return $data;
     }
 
-    private static function prepareFilterData(Request $request, $pageName, array $options)
+    private static function prepareFilterData(Request $request, $pageName, array $options, $onSuccessKeepFn)
     {
         $session = $request->getSession();
 
@@ -159,6 +162,9 @@ class FilterSessionHelper
             SortingHelper::validateSortField($sortField);
             $sortDir = $request->query->get('direction', 'asc');
             $sort = array('defaultSortFieldName' => $sortField, 'defaultSortDirection' => $sortDir);
+            if ($onSuccessKeepFn && $session->get($pageName.'_sort') !== $sort) {
+                $onSuccessKeepFn($session, array($pageName.'_sort'));
+            }
             $session->set($pageName.'_sort', $sort);
         }
 

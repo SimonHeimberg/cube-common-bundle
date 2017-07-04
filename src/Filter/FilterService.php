@@ -5,6 +5,7 @@ namespace CubeTools\CubeCommonBundle\Filter;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Knp\Component\Pager\PaginatorInterface;
+use CubeTools\CubeCommonBundle\Session\KeepOnSuccess;
 
 /**
  * Service for convenient filtering.
@@ -37,7 +38,8 @@ class FilterService
     public function getFilterData(FormInterface $form, $pageName = null)
     {
         $this->updatePageNameFromForm($pageName, $form);
-        $fData = FilterSessionHelper::getFilterData($this->rStack->getCurrentRequest(), $form, $pageName);
+        $onSuccessKeepFn = array(KeepOnSuccess::class, 'markFor');
+        $fData = FilterSessionHelper::getFilterData($this->rStack->getCurrentRequest(), $form, $pageName, $onSuccessKeepFn);
 
         return new FilterData($fData, $this->paginator);
     }
@@ -55,8 +57,9 @@ class FilterService
     {
         $this->updatePageNameFromForm($pageName, $form);
         $request = $this->rStack->getCurrentRequest();
+        $onSuccessKeepFn = array(KeepOnSuccess::class, 'markFor');
 
-        return FilterSessionHelper::saveFilterData($request, $form, $data, $pageName);
+        return FilterSessionHelper::saveFilterData($request, $form, $data, $pageName, $onSuccessKeepFn);
     }
 
     /**
