@@ -156,6 +156,7 @@ class FilterSessionHelper
                 $sort = array();
             }
         } else {
+            SortingHelper::validateSortField($sortField);
             $sortDir = $request->query->get('direction', 'asc');
             $sort = array('defaultSortFieldName' => $sortField, 'defaultSortDirection' => $sortDir);
             $session->set($pageName.'_sort', $sort);

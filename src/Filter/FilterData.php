@@ -115,12 +115,15 @@ class FilterData
         $options = $this->getOptions();
 
         if (empty($options['defaultSortFieldName'])) {
-            return $default;
+            $field = $default;
         } elseif (is_array($options['defaultSortFieldName'])) {
-            return $options['defaultSortFieldName'][0];
+            $field = $options['defaultSortFieldName'][0];
         } else {
-            return $options['defaultSortFieldName'];
+            $field = $options['defaultSortFieldName'];
         }
+        SortingHelper::validateSortField($field);
+
+        return $field;
     }
 
     /**
@@ -130,11 +133,13 @@ class FilterData
      *
      * @return string ASC or DESC
      */
-    public function getSortDir($default = 'ASC')
+    public function getSortDir($default = 'asc')
     {
         $options = $this->getOptions();
 
-        return isset($options['defaultSortDirection']) ? $options['defaultSortDirection'] : $default;
+        $dir = isset($options['defaultSortDirection']) ? $options['defaultSortDirection'] : $default;
+
+        return SortingHelper::getValidSortDir($dir);
     }
 
     /**
@@ -154,6 +159,7 @@ class FilterData
             $defaultSortOptions = array();
         }
 
+        // no sql injection prevention because only used in paginator
         return array_merge($defaultSortOptions, $this->getOptions(), $options); // highest priority rightmost
     }
 
