@@ -56,7 +56,7 @@ class FilterSessionHelper
     public function saveFilterData(Request $request, FormInterface $form, array $data, $pageName)
     {
         $form->submit($data);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             static::setFilterDataToSession($request->getSession(), $pageName, $data);
 
             return true;
@@ -83,7 +83,7 @@ class FilterSessionHelper
             return array('redirect' => $request->getBaseUrl().$request->getPathInfo());
         }
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             // use all() because getViewData() does not work as expected
             static::setFilterDataToSession($session, $pageName, $form->all());
             if ($request->getMethod() !== 'GET') {
@@ -114,7 +114,7 @@ class FilterSessionHelper
 
     public static function readFilterData(FormInterface $form)
     {
-        if (!$form->isValid()) {
+        if (!$form->isSubmitted() || !$form->isValid()) {
             throw new \LogicException('form to read is invalid');
         }
         $data = array();
