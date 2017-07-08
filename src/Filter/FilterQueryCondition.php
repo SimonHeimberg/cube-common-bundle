@@ -110,7 +110,7 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
      */
     public function getAsParameters(array $skip = array())
     {
-        $filter = array_filter($this->filter, 'count');
+        $filter = array_filter($this->filter, array($this, 'isActive'), ARRAY_FILTER_USE_KEY);
         if ($skip) {
             $filter = array_diff_key($filter, array_fill_keys($skip, null));
         }
