@@ -110,7 +110,7 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
      */
     public function getAsParameters(array $skip = array())
     {
-        $filter = array_filter($this->filter, array($this, 'isActive'), ARRAY_FILTER_USE_KEY);
+        $filter = array_filter($this->filter, array($this, 'isAnActiveValue'));
         if ($skip) {
             $filter = array_diff_key($filter, array_fill_keys($skip, null));
         }
@@ -127,7 +127,7 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
      */
     public function isActive($name)
     {
-        return isset($this->filter[$name]) && '' !== $this->filter[$name] && count($this->filter[$name]);
+        return isset($this->filter[$name]) && $this->isAnActiveValue($this->filter[$name]);
     }
 
     /**
@@ -254,5 +254,17 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
         }
 
         return ltrim($table.'.'.$dbColumn, '.');
+    }
+
+    /**
+     * Returns true if the value is an active filter.
+     *
+     * @param any $value
+     *
+     * @return bool
+     */
+    private function isAnActiveValue($value)
+    {
+        return '' !== $value && count($value);
     }
 }
