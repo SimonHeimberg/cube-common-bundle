@@ -60,7 +60,7 @@ class FilterSessionHelper
     {
         $form->submit($data);
         if ($form->isSubmitted() && $form->isValid()) {
-            static::setFilterDataToSession($request->getSession(), $pageName, $data, $onSuccessKeepFn);
+            self::setFilterDataToSession($request->getSession(), $pageName, $data, $onSuccessKeepFn);
 
             return true;
         }
@@ -81,21 +81,21 @@ class FilterSessionHelper
     {
         $session = $request->getSession();
         if ('1' == $request->query->get('filter_reset')) {
-            static::setFilterDataToSession($session, $pageName, array(), null);
+            self::setFilterDataToSession($session, $pageName, array(), null);
 
             return array('redirect' => $request->getBaseUrl().$request->getPathInfo());
         }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // use all() because getViewData() does not work as expected
-            static::setFilterDataToSession($session, $pageName, $form->all(), $onSuccessKeepFn);
+            self::setFilterDataToSession($session, $pageName, $form->all(), $onSuccessKeepFn);
             if ($request->getMethod() !== 'GET') {
                 return array('redirect' => $request->getBaseUrl().$request->getPathInfo());
                     // do not use getRequestUri because includes the query parameter (?page=3)
             }
             $filter = $form->getData();
         } else {
-            $data = static::getFilterDataFromSession($session, $pageName);
+            $data = self::getFilterDataFromSession($session, $pageName);
             if ($data && $form->isSubmitted()) {
                 $formClass = get_class($form);
                 $tmpForm = new $formClass($form->getConfig()); // to get the filter data without changing the form data
@@ -109,7 +109,7 @@ class FilterSessionHelper
             }
         }
 
-        $fData = static::prepareFilterData($request, $pageName, $form->getConfig()->getOptions(), $onSuccessKeepFn);
+        $fData = self::prepareFilterData($request, $pageName, $form->getConfig()->getOptions(), $onSuccessKeepFn);
         $fData['filter'] = new FilterQueryCondition($filter);
 
         return $fData;

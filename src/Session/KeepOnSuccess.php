@@ -20,9 +20,9 @@ class KeepOnSuccess
     public static function markFor(SessionInterface $session, $keys)
     {
         foreach ($keys as $keyName) {
-            $toCheck = $session->get(static::STORAGE_KEY, array());
+            $toCheck = $session->get(self::STORAGE_KEY, array());
             $toCheck[$keyName] = true;
-            $session->set(static::STORAGE_KEY, $toCheck);
+            $session->set(self::STORAGE_KEY, $toCheck);
         }
     }
 }

@@ -21,13 +21,13 @@ class ColsSelectorController extends Controller
      */
     public function nearButtonAction($path, $btnId = '')
     {
-        if (isset(static::$colsButtons[$btnId])) {
-            ++static::$colsButtons[$btnId];
+        if (isset(self::$colsButtons[$btnId])) {
+            ++self::$colsButtons[$btnId];
             $reply = $this->render('CubeToolsCubeCommonBundle:ColsSelector:nearButtonDuplicateId.inc.html.twig', array(
                 'btnId' => $btnId,
             ));
         } else {
-            static::$colsButtons[$btnId] = 1;
+            slef::$colsButtons[$btnId] = 1;
             $reply = new Response('');
         }
 
@@ -38,7 +38,7 @@ class ColsSelectorController extends Controller
     {
         $settings = array();
         $errors = array();
-        foreach (static::$colsButtons as $btnId => $nr) {
+        foreach (self::$colsButtons as $btnId => $nr) {
             $saveId = $this->getId($path, $btnId);
             $settings[$btnId] = array('settings' => $this->getColsSettings($saveId));
             if ($nr > 1) {
