@@ -27,7 +27,7 @@ class ColsSelectorController extends Controller
                 'btnId' => $btnId,
             ));
         } else {
-            slef::$colsButtons[$btnId] = 1;
+            self::$colsButtons[$btnId] = 1;
             $reply = new Response('');
         }
 
