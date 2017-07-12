@@ -56,7 +56,7 @@ class FilterSessionHelper
         }
     }
 
-    public function saveFilterData(Request $request, FormInterface $form, array $data, $pageName, $onSuccessKeepFn)
+    public static function saveFilterData(Request $request, FormInterface $form, array $data, $pageName, $onSuccessKeepFn)
     {
         $form->submit($data);
         if ($form->isSubmitted() && $form->isValid()) {
