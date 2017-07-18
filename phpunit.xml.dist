@@ -21,4 +21,9 @@
             </exclude>
         </whitelist>
     </filter>
+
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+        <!-- SYMFONY_DEPRECATIONS_HELPER=/./ phpunit # to STOP at 1st deprecation -->
+    </listeners>
 </phpunit>
