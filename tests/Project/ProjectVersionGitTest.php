@@ -4,7 +4,7 @@ namespace Tests\CubeTools\CubeCommonBundle\Project;
 
 use CubeTools\CubeCommonBundle\Project\ProjectVersionGit;
 
-class ProjectVersionGitTest extends \PHPUnit_Framework_TestCase
+class ProjectVersionGitTest extends \PHPUnit\Framework\TestCase
 {
     private static $tmpDir;
 

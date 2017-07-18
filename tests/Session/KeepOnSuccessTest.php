@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use CubeTools\CubeCommonBundle\Session\KeepOnSuccess;
 use CubeTools\CubeCommonBundle\Session\KeepOnSuccessEventListener;
 
-class KeepOnSuccessTest extends \PHPUnit_Framework_TestCase
+class KeepOnSuccessTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests keeping.

@@ -4,7 +4,7 @@ namespace Tests\CubeTools\CubeCommonBundle\DataHandling;
 
 use CubeTools\CubeCommonBundle\DataHandling\DataConversion;
 
-class DataConversionTest extends \PHPUnit_Framework_TestCase
+class DataConversionTest extends \PHPUnit\Framework\TestCase
 {
     public function testDataTextToDataTrue()
     {

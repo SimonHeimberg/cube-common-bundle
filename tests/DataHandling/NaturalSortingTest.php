@@ -4,7 +4,7 @@ namespace Tests\CubeTools\CubeCommonBundle\DataHandling;
 
 use CubeTools\CubeCommonBundle\DataHandling\NaturalSorting;
 
-class NaturalSortingTest extends \PHPUnit_Framework_TestCase
+class NaturalSortingTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var array subsequent elements are all unique identifiers for test procedures
