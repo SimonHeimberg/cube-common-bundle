@@ -96,17 +96,7 @@ class FilterSessionHelper
             $filter = $form->getData();
         } else {
             $data = self::getFilterDataFromSession($session, $pageName);
-            if ($data && $form->isSubmitted()) {
-                $formClass = get_class($form);
-                $tmpForm = new $formClass($form->getConfig()); // to get the filter data without changing the form data
-                $tmpForm->submit($data);
-                $filter = $tmpForm->getData();
-            } elseif ($data) {
-                $form->submit($data);
-                $filter = $form->getData();
-            } else {
-                $filter = array();
-            }
+            $filter = self::getUnsubmittedData($data, $form);
         }
 
         $fData = self::prepareFilterData($request, $pageName, $form->getConfig()->getOptions(), $onSuccessKeepFn);
@@ -169,5 +159,22 @@ class FilterSessionHelper
         }
 
         return array('filter' => null, 'page' => $page, 'redirect' => null, 'options' => $sort);
+    }
+
+    private static function getUnsubmittedData(array $data, FormInterface $form)
+    {
+        if ($data && $form->isSubmitted()) {
+            $formClass = get_class($form);
+            $tmpForm = new $formClass($form->getConfig()); // to get the filter data without changing the form data
+            self::submitSessionData($tmpForm, $data);
+            $filter = $tmpForm->getData();
+        } elseif ($data) {
+            self::submitSessionData($form, $data);
+            $filter = $form->getData();
+        } else {
+            $filter = array();
+        }
+
+        return $filter;
     }
 }
