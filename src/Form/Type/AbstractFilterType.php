@@ -40,6 +40,7 @@ class AbstractFilterType extends AbstractType
             array(
                 'csrf_protection'   => false,
                 'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
+                'data' => array(),
                 'defaultSort' => array(),
             )
         );

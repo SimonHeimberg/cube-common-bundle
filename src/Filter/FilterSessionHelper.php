@@ -161,7 +161,7 @@ class FilterSessionHelper
         return array('filter' => null, 'page' => $page, 'redirect' => null, 'options' => $sort);
     }
 
-    private static function getUnsubmittedData(array $data, FormInterface $form)
+    private static function getUnsubmittedData($data, FormInterface $form)
     {
         if ($data && $form->isSubmitted()) {
             $formClass = get_class($form);
@@ -171,8 +171,17 @@ class FilterSessionHelper
         } elseif ($data) {
             self::submitSessionData($form, $data);
             $filter = $form->getData();
-        } else {
+        } elseif ($form->isEmpty()) {
             $filter = array();
+        } elseif ($form->getData()) {
+            $filter = $form->getData();
+        } else { // data set directly on children
+            $filter = array();
+            foreach ($form as $name => $child) {
+                if ($child->getConfig()->getMapped()) {
+                    $filter[$name] = $child->getData();
+                }
+            }
         }
 
         return $filter;
