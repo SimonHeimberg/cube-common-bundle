@@ -45,6 +45,22 @@ class FilterService
     }
 
     /**
+     * Get default filter data and clears it in session.
+     *
+     * @param FormInterface $form     filter form generated from this class
+     * @param string|null   $pageName for storing filter and page no in session
+     *
+     * @return array with redirect (null), filter (FilterQueryCondition) and page nr (int)
+     */
+    public function getClearedFilterData(FormInterface $form, $pageName = null)
+    {
+        $this->updatePageNameFromForm($pageName, $form);
+        $fData = FilterSessionHelper::getClearedFilterData($this->rStack->getCurrentRequest(), $form, $pageName);
+
+        return new FilterData($fData, $this->paginator);
+    }
+
+    /**
      * Save data into forms session.
      *
      * @param FormInterface $form

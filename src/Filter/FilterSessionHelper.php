@@ -105,6 +105,19 @@ class FilterSessionHelper
         return $fData;
     }
 
+    public static function getClearedFilterData(Request $request, FormInterface $form, $pageName)
+    {
+        $session = $request->getSession();
+        $noData = array();
+        self::setFilterDataToSession($session, $pageName, $noData, null);
+        $filter = self::getUnsubmittedData($noData, $form);
+
+        $fData = self::prepareFilterData($request, $pageName, $form->getConfig()->getOptions(), null);
+        $fData['filter'] = new FilterQueryCondition($filter);
+
+        return $fData;
+    }
+
     public static function readFilterData(FormInterface $form)
     {
         if (!$form->isSubmitted() || !$form->isValid()) {
