@@ -179,10 +179,10 @@ class FilterSessionHelper
         if ($data && $form->isSubmitted()) {
             $formClass = get_class($form);
             $tmpForm = new $formClass($form->getConfig()); // to get the filter data without changing the form data
-            self::submitSessionData($tmpForm, $data);
+            $tmpForm->submit($data);
             $filter = $tmpForm->getData();
         } elseif ($data) {
-            self::submitSessionData($form, $data);
+            $form->submit($data);
             $filter = $form->getData();
         } elseif ($form->isEmpty()) {
             $filter = array();
