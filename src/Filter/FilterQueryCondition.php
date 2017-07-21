@@ -251,6 +251,25 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
     }
 
     /**
+     * Sets the parameter from the filter.
+     *
+     * @param string      $parameterName
+     * @param string|null $filterName    defaults to $parameterName
+     *
+     * @return $this
+     */
+    public function setFilterParameter($parameterName, $filterName = null)
+    {
+        if (null === $filterName) {
+            $filterName = $parameterName;
+        }
+        $value = $this->filter[$parameterName];
+        $this->qb->setParameter($filterName, $this->toParameterValue($value));
+
+        return $this;
+    }
+
+    /**
      * Returns value usable as parameter.
      *
      * Coverts ArrayCollection to array.

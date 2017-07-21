@@ -3,6 +3,7 @@
 namespace Tests\CubeTools\CubeCommonBundle\Filter;
 
 use CubeTools\CubeCommonBundle\Filter\FilterQueryCondition;
+use CubeTools\CubeCommonBundle\Filter\FilterConstants;
 use PHPUnit\Framework\TestCase;
 
 class FilterQueryConditionTest extends TestCase
@@ -49,7 +50,47 @@ class FilterQueryConditionTest extends TestCase
         $this->assertCount(3, $asPf);
         $this->assertArrayNotHasKey('x', $asPf);
 
-        $filter->andWhereEqual('dbTable', 'notSet'); // no error
-        $filter->andWhereIn('dbTbl', 'y');
+        // no error when condition not met:
+        $filter->andWhereEqual('dbTable', 'notSet'); // not set
+        $filter->andWhereIn('dbTbl', 'y'); // null
+        $filter->andWhereLike('dbT', 'y', 'dbCol'); // null
+        $this->assertTrue(true, 'no exception thrown');
+    }
+
+    public function testAndWhereFunctions()
+    {
+        $noWhereCalls = 9;
+        $mQb = $this->getMockedQueryBuilder(array('andWhere', 'setParameter'));
+        $mQb->expects($this->exactly($noWhereCalls))->method('andWhere')->will($this->returnSelf());
+        $mQb->expects($this->exactly($noWhereCalls - 3 + 2))->method('setParameter');
+
+        $filter = new FilterQueryCondition(array(
+            'f' => 'sae',
+            'g' => array('from' => 1, 'to' => null),
+            'h' => array('from' => 9, 'to' => 11),
+            'i' => FilterConstants::WHERE_IS_NOT_SET,
+            'j' => FilterConstants::WHERE_IS_SET,
+        ));
+        $filter->setQuerybuilder($mQb);
+
+        $filter->andWhereEqual('dbTable', 'f');
+        $filter->andWhereLike('table', 'f', 'dbColmn');
+        $filter->andWhereIn('dbTbl', 'f');
+        $filter->andWhereIsSetIsNotSet('dbT', 'i'); // 0 calls on setParameter
+        $filter->andWhereIsSetIsNotSet('dbT', 'j', 'dbC'); // 0 calls on setParameter
+        $filter->andWhereCheckedValue('dTbl', 'f', 'dbCol'); // 0 calls on setParameter
+        $filter->andWhereDaterange('tbl', 'g');
+        $filter->andWhereDaterange('tblNam', 'h'); // 2 Calls on both
+
+        $filter->setFilterParameter('f');
+        $filter->setFilterParameter('g', 'parInDb');
+    }
+
+    private function getMockedQueryBuilder(array $methods)
+    {
+        return $this->getMockBuilder('dummy\QueryBuilder')
+            ->disableAutoload()
+            ->setMethods($methods)
+            ->getMock();
     }
 }
