@@ -226,10 +226,13 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
         if ($this->isActive($filterName)) {
             $value = $this->filter[$filterName];
             $dbColName = $this->getDbColumn($table, $filterName, $dbColumn);
-            if (FilterConstants::SOME_ASSIGNED == $value) {
+            if (FilterConstants::WHERE_IS_SET === $value) {
                 $this->qb->andWhere($dbColName.' IS NOT NULL');
-            } else { // FilterConstants::NONE_ASSIGNED === $value
+            } elseif (FilterConstants::WHERE_IS_NOT_SET === $value) {
                 $this->qb->andWhere($dbColName.' IS NULL');
+            } else {
+                $param = $filterName;
+                $this->qb->andWhere($dbColName.' = :'.$param)->setParameter($param, $value);
             }
         }
     }
