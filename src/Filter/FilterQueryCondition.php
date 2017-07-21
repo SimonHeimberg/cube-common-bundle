@@ -287,6 +287,37 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
         return $value;
     }
 
+    /**
+     * Calls any method on QueryBuilder if it exists there.
+     *
+     * @param string $method
+     * @param any[]  $args
+     *
+     * @return any
+     *
+     * @throws \BadMethodCallException when method does not exist
+     */
+    public function __call($method, $args)
+    {
+        $callback = array($this->qb, $method);
+        if (!is_callable($callback)) {
+            $msg = "Undefined method '$method (not in ".static::class;
+            if ($this->qb && is_object($this->qb)) {
+                $msg .= ' or '.get_class($this->qb).')';
+            } else {
+                $msg .= ' and Querybuilder is not set)';
+            }
+            throw new \BadMethodCallException($msg);
+        }
+        $ret = call_user_func_array($callback, $args);
+
+        if ($ret === $this->qb) {
+            return $this;
+        }
+
+        return $ret;
+    }
+
     private function getDbColumn($table, $filterName, $dbColumn)
     {
         if (null === $dbColumn) {

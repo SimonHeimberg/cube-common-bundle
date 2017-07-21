@@ -86,6 +86,27 @@ class FilterQueryConditionTest extends TestCase
         $filter->setFilterParameter('g', 'parInDb');
     }
 
+    public function testQueryBuilderFunctions()
+    {
+        $returnGetParameter = rand();
+        $mQb = $this->getMockedQueryBuilder(array('orWhere', 'join', 'getParameter'));
+        $mQb->expects($this->once())->method('orWhere');
+        $mQb->expects($this->once())->method('join')->will($this->returnSelf());
+        $mQb->expects($this->once())->method('getParameter')->willReturn($returnGetParameter);
+
+        $filter = new FilterQueryCondition(array(
+            'g' => 23,
+        ));
+        $filter->setQuerybuilder($mQb);
+
+        $filter->orWhere('x.y = 3');
+        $this->assertSame($filter, $filter->join('tbl.extRef', 'e'));
+        $this->assertSame($returnGetParameter, $filter->getParameter('aPar'));
+
+        $this->expectException('BadMethodCallException');
+        $filter->nonExistingMethod('jdfklsa');
+    }
+
     private function getMockedQueryBuilder(array $methods)
     {
         return $this->getMockBuilder('dummy\QueryBuilder')
