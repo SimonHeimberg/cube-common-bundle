@@ -65,12 +65,12 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
      *
      * @param string $name name of the element
      *
-     * @return any the value
+     * @return any the value, but convert ArrayCollection to array
      */
     public function offsetGet($name)
     {
         if (isset($this->filter[$name])) {
-            return $this->filter[$name];
+            return $this->toParameterValue($this->filter[$name]);
         }
 
         // for when called like isset($fqc['x']['y']) and element x does not exist
@@ -245,6 +245,24 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
                 $this->qb->andWhere($dbColName.' = 0 OR '.$dbColName.' IS NULL');
             }
         }
+    }
+
+    /**
+     * Returns value usable as parameter.
+     *
+     * Coverts ArrayCollection to array.
+     *
+     * @param any $value
+     *
+     * @return any
+     */
+    public static function toParameterValue($value)
+    {
+        if (method_exists($value, 'toArray')) {
+            $value = $value->toArray();
+        }
+
+        return $value;
     }
 
     private function getDbColumn($table, $filterName, $dbColumn)
