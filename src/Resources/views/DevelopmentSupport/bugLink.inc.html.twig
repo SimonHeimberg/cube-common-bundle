@@ -19,7 +19,7 @@
                 open('{{ path("cube_common.reportbug") }}?' + queryParam, '_blank');
                 return false;
             }
-            $('#cube_common_bug_report_link').click(report_bug).attr('href', {{ path("cube_common.reportbug")~'#js' }});
+            $('#cube_common_bug_report_link').click(report_bug).attr('href', '{{ path("cube_common.reportbug")~'#js' }}');
         });
     </script>
 {%- endspaceless %}
