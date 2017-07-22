@@ -38,7 +38,12 @@ class FilterSessionHelper
         $hashCtx = hash_init('md5');
         foreach ($filter as $n => $f) {
             if (is_subclass_of($f, FormInterface::class)) {
-                $f = $f->getViewData();
+                $form = $f;
+                $f = $form->getViewData();
+                if (is_array($f) && $f && $form->getConfig()->hasOption('transformer') && $form->getConfig()->hasOption('class')) {
+                    // is a tetranz_select2_entity, which has the ids as keys in view format
+                    $f = array_keys($f);
+                }
                 $filter[$n] = $f;
             }
             hash_update($hashCtx, '!'); // hash depends on field position
@@ -87,7 +92,7 @@ class FilterSessionHelper
         }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // use all() because getViewData() does not work as expected
+            // use all() because getViewData() returns the forms viewdata but not the elements
             self::setFilterDataToSession($session, $pageName, $form->all(), $onSuccessKeepFn);
             if ($request->getMethod() !== 'GET') {
                 return array('redirect' => $request->getBaseUrl().$request->getPathInfo());
