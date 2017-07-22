@@ -110,12 +110,13 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
      */
     public function getAsParameters(array $skip = array())
     {
-        $filter = array_filter($this->filter, array($this, 'isAnActiveValue'));
+        $filter = $this->filter;
         if ($skip) {
             $filter = array_diff_key($filter, array_fill_keys($skip, null));
         }
+        $actFilter = array_filter($filter, array($this, 'isAnActiveValue'));
 
-        return $filter;
+        return array_map(array($this, 'toParameterValue'), $actFilter);
     }
 
     /**
