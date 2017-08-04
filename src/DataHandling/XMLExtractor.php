@@ -132,7 +132,16 @@ class XMLExtractor
             $this->readData[] = $readDataElement;
         }
         
+        $this->processData();
         return $this->readData;
+    }
+    
+    /**
+     * Method for processing read data. Method to be overriden, here is empty 
+     */
+    public function processData()
+    {
+        
     }
     
 }
