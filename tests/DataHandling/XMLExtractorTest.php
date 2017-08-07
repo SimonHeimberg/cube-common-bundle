@@ -149,6 +149,38 @@ class XMLExtractorTest extends \PHPUnit\Framework\TestCase
     ));
     
     /* end of data for testProcessXMLSimpleReplaceSourceElement */
+    /* data for testProcessXMLEmptyElement */
+    
+    const EMPTY_ELEMENT_SOURCE = '<?xml version="1.0" encoding="UTF-8"?>
+        <elements>
+          <element>
+            <element1/>
+            <element2>el2</element2>
+            <element3></element3>
+            <element4>el4</element4>
+          </element>
+          <element>
+            <element1></element1>
+            <element2/>
+            <element3>el33</element3>
+            <element4>el44</element4>
+          </element>  
+        </elements>';
+    
+    protected $emptyElementExpectedReadArray = array(array(
+        'element1' => '',
+        'element2' => 'el2',
+        'element3' => '',
+        'element4' => 'el4',
+    ),
+    array(
+        'element1' => '',
+        'element2' => '',
+        'element3' => 'el33',
+        'element4' => 'el44',
+    ));
+    
+    /* end of data for testProcessXMLEmptyElement */
     
     protected $xpath = '//elements/element';
     
@@ -215,5 +247,13 @@ class XMLExtractorTest extends \PHPUnit\Framework\TestCase
         $this->object->setSource(self::SIMPLE_SOURCE);
         $readArray = $this->object->readSource();
         $this->assertEquals($this->replaceSourceElementExpectedReadArray, $readArray, 'Reading of XML source was not correct!');
+    }
+    
+    public function testProcessXMLEmptyElement()
+    {
+        $this->object = new XMLExtractor($this->xpath, $this->simpleTransformations);
+        $this->object->setSource(self::EMPTY_ELEMENT_SOURCE);
+        $readArray = $this->object->readSource();
+        $this->assertEquals($this->emptyElementExpectedReadArray, $readArray, 'Reading of XML source was not correct!');
     }
 }
