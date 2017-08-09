@@ -14,31 +14,30 @@ if (typeof(cubetools) === 'undefined') {
         cols.each(function () {
             var colId = $(this).attr('id');
             if (hidableSettings[colId]) {
-                updateOneCol(table, hidableSettings[colId].colNo, hidableSettings[colId].hidden);
+                updateOneCol(table, hidableSettings[colId], hidableSettings[colId].hidden);
             }
         });
     };
 
-    var updateOneCol = function(table, colNo, hide)
+    var updateOneCol = function(table, colSettings, hide)
     {
-        var colFilter = ':nth-child';
-        if (table.attr('data-colFilter')) {
-            colFilter = table.attr('data-colFilter');
-            // example: :nth-child, :nth-of-type, :nth-col (from bramstein/column-selector)
-        }
-        var cells = table.find('tr td, tr th').filter(colFilter+'('+colNo+')');
+        var rule = columnStyle.cssRules.item(colSettings.ruleNo);
         if (hide) {
-            cells.hide();
+            rule.style.display = 'none';
         } else {
-            cells.show();
+            rule.style.display = '';
         }
     };
 
     var tableSettings = {};
+    var columnStyle = null;
 
     cs.initializeColsSelection = function (settingsOfTables)
     {
         // initialize selectors
+        var styleNode = $('<style type="text/css" title="colHideStyles">');
+        $(document.head).append(styleNode);
+        columnStyle = styleNode[0].sheet;
         var selectorBtns = $('.colsSelector');
         selectorBtns.each(function () {
             var btn = $(this);
@@ -49,6 +48,14 @@ if (typeof(cubetools) === 'undefined') {
                 var setSettings = {};
             }
             var tbl = btn.closest('table');
+            if (!tbl.attr('id')) {
+                var tblNr;
+                if (!tblNr) {
+                    tblNr = Math.floor(Math.random() * 1024);
+                }
+                tbl.attr('id', 'tblColSel' + ++tblNr);
+            }
+            var tblSel = '#' + tbl.attr('id');
             var settings = {}; // own variable for keeping the column order
             tbl.find('tr').eq(0).children('td, th').each( function(i) {
                 var col = $(this);
@@ -57,7 +64,22 @@ if (typeof(cubetools) === 'undefined') {
                     var cSettings = setSettings[colId] || {};
                     cSettings.colId = colId;
                     cSettings.colNo = i + 1;
-                    settings[colId] = cSettings;
+                    var colSel;
+                    if (col.attr('class')) {
+                        var colClass = col.attr('class').split(' ').find(function (el) {
+                            return 0 === el.indexOf('col'); // ~startsWith
+                        });
+                        if (colClass) {
+                            colSel = tblSel + ' tr .' + colClass;
+                        }
+                    }
+                    if (!colSel) {
+                        var colSel = tblSel + ' tr td:nth-child(' + cSettings.colNo+ ')';
+                        colSel += ', ' + colSel.replace(' td:', ' th:');
+                    }
+                    columnStyle.insertRule(colSel+' {}', columnStyle.cssRules.length);
+                    cSettings.ruleNo = columnStyle.cssRules.length - 1;
+                     settings[colId] = cSettings;
                 }
             });
             tableSettings[id] = settings;
@@ -70,7 +92,7 @@ if (typeof(cubetools) === 'undefined') {
         var table = col.closest('table');
         var id = table.find('.colsSelector').attr('id') || '';
         var settings = cs.getHidableSettings(id);
-        updateOneCol(table, settings[colId].colNo, hide);
+        updateOneCol(table, settings[colId], hide);
         settings[colId].hidden = hide;
         cs.saveHidableSettings(id, settings);
     };
@@ -109,6 +131,7 @@ if (typeof(cubetools) === 'undefined') {
                 var toSave = $.extend({}, settings[i]);
                 delete toSave.colId;
                 delete toSave.colNo;
+                delete toSave.ruleNo;
                 saveSettings[i] = toSave;
             }
         }
