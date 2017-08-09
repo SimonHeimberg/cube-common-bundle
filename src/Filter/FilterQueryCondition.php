@@ -211,6 +211,9 @@ class FilterQueryCondition implements \ArrayAccess, \Countable
             $value = $this->filter[$filterName];
             $dbColName = $this->getDbColumn($table, $filterName, $dbColumn);
             $param = $filterName;
+            if ($value instanceof \DateTimeInterface) {
+                $value = array('from' => $value, 'to' => $value);
+            }
             if ($value['from']) {
                 $this->qb->andWhere($dbColName.' >= :'.$param.'From')->setParameter($param.'From', $value['from']);
             }
