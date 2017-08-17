@@ -36,6 +36,16 @@ class ProjectVersionGit
     }
 
     /**
+     * @return string closest tag of the project, read from git
+     */
+    public function getClosestTagString()
+    {
+        $version = $this->getGitData()['tag'];
+
+        return strstr($version, '-', true);
+    }
+
+    /**
      * @return string id of the project version, git hash
      */
     public function getGitHash()
