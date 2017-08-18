@@ -36,7 +36,7 @@ class XMLExtractor
      * @param array $transformations transformations (key is used to get element with the same name on $xpath level and place it under this key in output array)
      * @param array $translations key is name of XML source element, value - name of column in output 
      */
-    public function __construct($xpath, $transformations, $translations=array())
+    public function __construct($xpath, $transformations, $translations = array())
     {
         $this->xpath = $xpath;
         $this->transformations = $transformations;
@@ -60,7 +60,8 @@ class XMLExtractor
      *      method is executed with ('location', 'country')
      *      in that case we will be looking for element 'location' in XML and output it as 'country'
      *      in XML we will not be looking for 'country' element anymore
-     * Convenient to use if we want dynamicaly change source of data without changing further code.  
+     * Convenient to use if we want dynamically change source of data without changing further code.  
+     *
      * @param string $sourceElementName name of element in XML source
      * @param string $outputElementName name of element in output from XML extraction (can replace current source element)
      * @return \Ebbe\TestManager\EvaluationBundle\Logic\XMLExtractor object, on which this method was executed
@@ -104,7 +105,7 @@ class XMLExtractor
             $readDataElement = array();
             
             foreach ($this->transformations as $elementName => $arrayValue) {
-                if(stripos($elementName, '/@') !== false){
+                if (stripos($elementName, '/@') !== false) {
                     $elementArray = explode('/@', $elementName);
                     $elementNodeName = $elementArray[0];
                     $elementAttribute = $elementArray[1];
@@ -137,12 +138,17 @@ class XMLExtractor
     }
     
     /**
-     * Method for processing read data. Method to be overriden, here is empty 
+     * Method for processing read data. Method to be overridden, here is empty. 
      */
-    public function processData()
-    {
-        
-    }
+    public function processData() {}
     
+    /**
+     * Method for getting extracted data from XML.
+     * @return array extracted data from XML
+     */
+    public function getReadData()
+    {
+        return $this->readData;
+    }
 }
 
