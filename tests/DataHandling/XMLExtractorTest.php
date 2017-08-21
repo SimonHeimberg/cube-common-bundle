@@ -200,18 +200,13 @@ class XMLExtractorTest extends \PHPUnit\Framework\TestCase
     protected $xpath = '//elements/element';
 
     /**
-     * @var XMLExtractor
-     */
-    protected $object;
-
-    /**
      * Test of simple XML extraction (no attributes).
      */
     public function testProcessXMLSimple()
     {
-        $this->object = new XMLExtractor($this->xpath, $this->simpleTransformations);
-        $this->object->setSource(self::SIMPLE_SOURCE);
-        $readArray = $this->object->readSource();
+        $object = new XMLExtractor($this->xpath, $this->simpleTransformations);
+        $object->setSource(self::SIMPLE_SOURCE);
+        $readArray = $object->readSource();
         $this->assertEquals($this->simpleExpectedReadArray, $readArray, 'Reading of XML source was not correct!');
     }
 
@@ -220,9 +215,9 @@ class XMLExtractorTest extends \PHPUnit\Framework\TestCase
      */
     public function testProcessXMLWithAttributeInFirstElement()
     {
-        $this->object = new XMLExtractor($this->xpath, $this->attributeFirstElementTransformations);
-        $this->object->setSource(self::ATTRIBUTE_FIRST_ELEMENT_SOURCE);
-        $readArray = $this->object->readSource();
+        $object = new XMLExtractor($this->xpath, $this->attributeFirstElementTransformations);
+        $object->setSource(self::ATTRIBUTE_FIRST_ELEMENT_SOURCE);
+        $readArray = $object->readSource();
         $this->assertEquals($this->attributeFirstElementExpectedReadArray, $readArray, 'Reading of XML source was not correct!');
     }
 
@@ -231,9 +226,9 @@ class XMLExtractorTest extends \PHPUnit\Framework\TestCase
      */
     public function testProcessXMLWithAttributeInChild()
     {
-        $this->object = new XMLExtractor($this->xpath, $this->attributeInChildTransformations);
-        $this->object->setSource(self::ATTRIBUTE_IN_CHILD);
-        $readArray = $this->object->readSource();
+        $object = new XMLExtractor($this->xpath, $this->attributeInChildTransformations);
+        $object->setSource(self::ATTRIBUTE_IN_CHILD);
+        $readArray = $object->readSource();
         $this->assertEquals($this->attributeInChildExpectedReadArray, $readArray, 'Reading of XML source was not correct!');
     }
 
@@ -242,10 +237,10 @@ class XMLExtractorTest extends \PHPUnit\Framework\TestCase
      */
     public function testProcessXMLSimpleTranslation()
     {
-        $this->object = new XMLExtractor($this->xpath, $this->simpleTransformations);
-        $this->object->addSourceTranslation('element1', 'element_first');
-        $this->object->setSource(self::SIMPLE_SOURCE);
-        $readArray = $this->object->readSource();
+        $object = new XMLExtractor($this->xpath, $this->simpleTransformations);
+        $object->addSourceTranslation('element1', 'element_first');
+        $object->setSource(self::SIMPLE_SOURCE);
+        $readArray = $object->readSource();
         $this->assertEquals($this->simpleTranslationExpectedReadArray, $readArray, 'Reading of XML source was not correct!');
     }
 
@@ -254,10 +249,10 @@ class XMLExtractorTest extends \PHPUnit\Framework\TestCase
      */
     public function testProcessXMLSimpleReplaceSourceElement()
     {
-        $this->object = new XMLExtractor($this->xpath, $this->simpleTransformations);
-        $this->object->addOrReplaceSourceElement('element1', 'dynamicElementName');
-        $this->object->setSource(self::SIMPLE_SOURCE);
-        $readArray = $this->object->readSource();
+        $object = new XMLExtractor($this->xpath, $this->simpleTransformations);
+        $object->addOrReplaceSourceElement('element1', 'dynamicElementName');
+        $object->setSource(self::SIMPLE_SOURCE);
+        $readArray = $object->readSource();
         $this->assertEquals($this->replaceSourceElementExpectedReadArray, $readArray, 'Reading of XML source was not correct!');
     }
 
@@ -266,9 +261,9 @@ class XMLExtractorTest extends \PHPUnit\Framework\TestCase
      */
     public function testProcessXMLEmptyElement()
     {
-        $this->object = new XMLExtractor($this->xpath, $this->simpleTransformations);
-        $this->object->setSource(self::EMPTY_ELEMENT_SOURCE);
-        $readArray = $this->object->readSource();
+        $object = new XMLExtractor($this->xpath, $this->simpleTransformations);
+        $object->setSource(self::EMPTY_ELEMENT_SOURCE);
+        $readArray = $object->readSource();
         $this->assertEquals($this->emptyElementExpectedReadArray, $readArray, 'Reading of XML source was not correct!');
     }
 }
