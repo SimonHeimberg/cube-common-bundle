@@ -40,9 +40,7 @@ class ProjectVersionGit
      */
     public function getClosestTagString()
     {
-        $version = $this->getGitData()['tag'];
-
-        return strstr($version, '-', true);
+        return $this->getGitData()['closestTag'];
     }
 
     /**
@@ -136,6 +134,7 @@ class ProjectVersionGit
         }
         $data['url'] = strtr($url, array('.git' => '', 'ssh://' => $R, 'git://' => $R, 'ftp://' => $R, 'ftps://' => $R, 'rsync://' => $R));
         $data['tag'] = exec('git describe --tags --always');
+        $data['closestTag'] = exec('git describe --tags --always --abbrev=0');
 
         return $data;
     }
