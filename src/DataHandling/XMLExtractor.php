@@ -32,6 +32,7 @@ class XMLExtractor
 
     /**
      * Constructor for XML extractor.
+     *
      * @param string $xpath           path for xpath where subsequent elements are placed
      * @param array  $transformations transformations (key is used to get element with the same name on $xpath level and place it under this key in output array)
      * @param array  $translations    key is name of XML source element, value - name of column in output
@@ -45,7 +46,9 @@ class XMLExtractor
 
     /**
      * Method providing XML content for object.
+     *
      * @param string $source XML content to be parsed
+     *
      * @return \Ebbe\TestManager\EvaluationBundle\Logic\XMLExtractor object, on which this method was executed
      */
     public function setSource($source)
@@ -65,6 +68,7 @@ class XMLExtractor
      *
      * @param string $sourceElementName name of element in XML source
      * @param string $outputElementName name of element in output from XML extraction (can replace current source element)
+     *
      * @return \Ebbe\TestManager\EvaluationBundle\Logic\XMLExtractor object, on which this method was executed
      */
     public function addOrReplaceSourceElement($sourceElementName, $outputElementName = null)
@@ -85,8 +89,10 @@ class XMLExtractor
 
     /**
      * Method for adding translations.
+     *
      * @param string $sourceElementName name of element in XML source
      * @param string $outputElementName name of element in output from XML extraction
+     *
      * @return \Ebbe\TestManager\EvaluationBundle\Logic\XMLExtractor object, on which this method was executed
      */
     public function addSourceTranslation($sourceElementName, $outputElementName)
@@ -98,6 +104,7 @@ class XMLExtractor
 
     /**
      * Method extracting data from XML
+     *
      * @return array extracted data from XML
      */
     public function readSource()
@@ -150,6 +157,7 @@ class XMLExtractor
 
     /**
      * Method for getting extracted data from XML.
+     *
      * @return array extracted data from XML
      */
     public function getReadData()
