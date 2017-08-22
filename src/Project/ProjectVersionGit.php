@@ -36,6 +36,14 @@ class ProjectVersionGit
     }
 
     /**
+     * @return string closest tag of the project, read from git
+     */
+    public function getClosestTagString()
+    {
+        return $this->getGitData()['closestTag'];
+    }
+
+    /**
      * @return string id of the project version, git hash
      */
     public function getGitHash()
@@ -126,6 +134,7 @@ class ProjectVersionGit
         }
         $data['url'] = strtr($url, array('.git' => '', 'ssh://' => $R, 'git://' => $R, 'ftp://' => $R, 'ftps://' => $R, 'rsync://' => $R));
         $data['tag'] = exec('git describe --tags --always');
+        $data['closestTag'] = exec('git describe --tags --always --abbrev=0');
 
         return $data;
     }
