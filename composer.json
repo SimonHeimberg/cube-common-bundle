@@ -18,11 +18,13 @@
         "cubetools/cube-common-develop": "dev-development@dev",
         "symfony/form": "^2.7|^3.0",
         "symfony/http-foundation": "^2.7|^3.0",
-        "symfony/phpunit-bridge": "^2.7|^3.0"
+        "symfony/phpunit-bridge": "^2.7|^3.0",
+        "symfony/dom-crawler": "^3.3"
     },
     "suggest": {
         "symfony/form": "for Form\\*",
-        "symfony/http-foundation": "for Form\\*Session"
+        "symfony/http-foundation": "for Form\\*Session",
+        "symfony/dom-crawler": "for DataHandling\\XMLExtractor"
     },
     "autoload": {
         "psr-4": {"CubeTools\\CubeCommonBundle\\": "src/"}
